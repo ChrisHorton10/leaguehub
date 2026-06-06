@@ -1,18 +1,35 @@
 import { createClient } from "@supabase/supabase-js";
-import { generateTeamBlurbs } from "./generateBlurbs";
-
+import { generateTeamBlurbs, LAST_YEAR_FINISH } from "./generateBlurbs";
+import { generateMatchupRecaps } from "./generateRecaps";
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
 
-async function getLeagueData() {
-  const leagueId = "1330820695583625216";
+const LEAGUE_ID = "1330820695583625216";
+const CURRENT_WEEK = 1;
+const IS_OFFSEASON = true;
 
+const LAST_YEAR_PTS = {
+  "Bdug14": 2127,
+  "Broth22": 2107,
+  "BCregg": 1852,
+  "GrimaceHugeSack": 1797,
+  "Gillilig": 1779,
+  "kmyers": 1785,
+  "ScubaSteve0709": 1692,
+  "ctracewell": 1629,
+  "shazman123": 1625,
+  "chrishorton10": 1655,
+  "SamHuman12": 1632,
+  "Sher2Lose": 1341,
+};
+
+async function getLeagueData() {
   const [rostersRes, usersRes, matchupsRes] = await Promise.all([
-    fetch(`https://api.sleeper.app/v1/league/${leagueId}/rosters`, { cache: "no-store" }),
-    fetch(`https://api.sleeper.app/v1/league/${leagueId}/users`, { cache: "no-store" }),
-    fetch(`https://api.sleeper.app/v1/league/${leagueId}/matchups/1`, { cache: "no-store" })
+    fetch(`https://api.sleeper.app/v1/league/${LEAGUE_ID}/rosters`, { cache: "no-store" }),
+    fetch(`https://api.sleeper.app/v1/league/${LEAGUE_ID}/users`, { cache: "no-store" }),
+    fetch(`https://api.sleeper.app/v1/league/${LEAGUE_ID}/matchups/1`, { cache: "no-store" })
   ]);
 
   const rosters = await rostersRes.json();
@@ -21,9 +38,6 @@ async function getLeagueData() {
 
   return { rosters, users, matchups };
 }
-
-const CURRENT_WEEK = 1;
-const IS_OFFSEASON = true;
 
 export default async function Home() {
   const { rosters, users, matchups } = await getLeagueData();
@@ -42,59 +56,88 @@ export default async function Home() {
     };
   });
 
+  // Fetch all player data once
+  let allPlayers = {};
+  try {
+    const playersRes = await fetch("https://api.sleeper.app/v1/players/nfl", { cache: "no-store" });
+    allPlayers = await playersRes.json();
+  } catch (e) {
+    console.log("Could not fetch players");
+  }
+
+  // Build roster data for each manager
+  const rosterInjuries = {};
+  const rosterPlayers = {};
+  const rosterScores = {};
+
+  rosters.forEach(roster => {
+    const user = userMap[roster.owner_id];
+    if (!user) return;
+
+    const taxiIds = new Set(roster.taxi || []);
+    const eligiblePlayers = (roster.players || [])
+      .filter(id => !taxiIds.has(id))
+      .map(id => allPlayers[id])
+      .filter(p => p && p.full_name && ["QB", "RB", "WR", "TE"].includes(p.position))
+      .sort((a, b) => (a.search_rank || 9999) - (b.search_rank || 9999));
+
+    const getTop = (pos, count) => eligiblePlayers.filter(p => p.position === pos).slice(0, count);
+
+    const starters = [
+      ...getTop("QB", 1),
+      ...getTop("RB", 2),
+      ...getTop("WR", 2),
+      ...getTop("TE", 1),
+    ];
+
+    const starterIds = new Set(starters.map(p => p.player_id));
+    const flexEligible = eligiblePlayers
+      .filter(p => !starterIds.has(p.player_id) && ["WR", "RB", "TE"].includes(p.position))
+      .slice(0, 2);
+
+    const startingLineup = [...starters, ...flexEligible];
+    const lineupScore = startingLineup.reduce((sum, p) => sum + (10000 - (p.search_rank || 9999)), 0);
+
+    rosterPlayers[user.username] = startingLineup.map(p => `${p.full_name} (${p.position})`);
+    rosterScores[user.username] = lineupScore;
+
+    // Injuries
+    const injured = (roster.players || [])
+      .map(id => allPlayers[id])
+      .filter(p => p && p.injury_status && ["Out", "IR", "Doubtful", "Questionable"].includes(p.injury_status))
+      .map(p => `${p.full_name} (${p.injury_status})`);
+    if (injured.length > 0) {
+      rosterInjuries[user.username] = injured;
+    }
+  });
+
+  // Build rankings using roster score + last year's data
   const rankings = rosters
     .map(roster => {
+      const user = userMap[roster.owner_id];
+      const username = user?.username || "Unknown";
       const wins = roster.settings.wins || 0;
       const losses = roster.settings.losses || 0;
       const points = (roster.settings.fpts || 0) + ((roster.settings.fpts_decimal || 0) / 100);
-      const powerScore = (wins * 3) + (points / 100);
-      const user = userMap[roster.owner_id];
+      const rosterScore = rosterScores[username] || 0;
+      const lastYearPts = LAST_YEAR_PTS[username] || 1500;
+      const lastYearFinish = LAST_YEAR_FINISH[username] || 12;
+      const preseasonScore = (rosterScore * 0.6) + (lastYearPts * 0.3) + ((13 - lastYearFinish) * 100 * 0.1);
+
       return {
         teamName: user?.name || "Unknown",
-        username: user?.username || "Unknown",
+        username,
         avatar: user?.avatar,
         wins,
         losses,
         points,
-        powerScore
+        powerScore: preseasonScore,
+        preseasonScore
       };
     })
-    .sort((a, b) => b.powerScore - a.powerScore);
+    .sort((a, b) => b.preseasonScore - a.preseasonScore);
 
-  // Fetch player data once for both injuries and roster players
-  let rosterInjuries = {};
-  let rosterPlayers = {};
-  try {
-    const playersRes = await fetch("https://api.sleeper.app/v1/players/nfl", { cache: "no-store" });
-    const allPlayers = await playersRes.json();
-
-    rosters.forEach(roster => {
-      const user = userMap[roster.owner_id];
-      if (!user) return;
-
-      const injured = (roster.players || [])
-        .map(id => allPlayers[id])
-        .filter(p => p && p.injury_status && ["Out", "IR", "Doubtful", "Questionable"].includes(p.injury_status))
-        .map(p => `${p.full_name} (${p.injury_status})`);
-      if (injured.length > 0) {
-        rosterInjuries[user.username] = injured;
-      }
-
-      const positionRanks = { QB: 1, RB: 2, WR: 3, TE: 4 };
-      const taxiIds = new Set(roster.taxi || []);
-      const players = (roster.players || [])
-        .filter(id => !taxiIds.has(id))
-        .map(id => allPlayers[id])
-        .filter(p => p && p.full_name && ["QB", "RB", "WR", "TE"].includes(p.position) && p.years_exp > 0)
-        .sort((a, b) => (positionRanks[a.position] - positionRanks[b.position]))
-        .slice(0, 10)
-        .map(p => `${p.full_name} (${p.position})`);
-      rosterPlayers[user.username] = players;
-    });
-  } catch (e) {
-    console.log("Could not fetch player data");
-  }
-
+  // Get blurbs from cache or generate
   let blurbs = [];
   const { data: cachedBlurbs } = await supabase
     .from("blurbs_cache")
@@ -103,7 +146,7 @@ export default async function Home() {
     .eq("is_offseason", IS_OFFSEASON)
     .order("created_at", { ascending: false })
     .limit(1);
-  
+
   if (cachedBlurbs && cachedBlurbs.length > 0) {
     blurbs = JSON.parse(cachedBlurbs[0].blurbs);
   } else {
@@ -114,6 +157,31 @@ export default async function Home() {
       blurbs: JSON.stringify(blurbs)
     }]);
   }
+  let recaps = [];
+if (!IS_OFFSEASON) {
+  const { data: cachedRecaps } = await supabase
+    .from("matchup_recaps")
+    .select("*")
+    .eq("week", CURRENT_WEEK)
+    .order("matchup_id", { ascending: true });
+
+  if (cachedRecaps && cachedRecaps.length === games.length) {
+    recaps = cachedRecaps.map(r => r.recap);
+  } else {
+    recaps = await generateMatchupRecaps(games, CURRENT_WEEK);
+    await Promise.all(
+      recaps.map((recap, i) =>
+        supabase.from("matchup_recaps").insert([{
+          week: CURRENT_WEEK,
+          matchup_id: games[i].matchup_id,
+          recap
+        }])
+      )
+    );
+  }
+}
+
+  // Build matchups
   const matchupMap = {};
   matchups.forEach(m => {
     if (!matchupMap[m.matchup_id]) matchupMap[m.matchup_id] = [];
@@ -123,11 +191,16 @@ export default async function Home() {
   const games = Object.values(matchupMap).map(pair => {
     const rosterA = rosters.find(r => r.roster_id === pair[0]?.roster_id);
     const rosterB = rosters.find(r => r.roster_id === pair[1]?.roster_id);
+    const userA = userMap[rosterA?.owner_id];
+    const userB = userMap[rosterB?.owner_id];
     return {
-      teamA: userMap[rosterA?.owner_id]?.name || "Unknown",
-      teamB: userMap[rosterB?.owner_id]?.name || "Unknown",
-      avatarA: userMap[rosterA?.owner_id]?.avatar,
-      avatarB: userMap[rosterB?.owner_id]?.avatar,
+      matchup_id: pair[0]?.matchup_id,
+      teamA: userA?.name || "Unknown",
+      teamB: userB?.name || "Unknown",
+      managerA: userA?.username || "Unknown",
+      managerB: userB?.username || "Unknown",
+      avatarA: userA?.avatar,
+      avatarB: userB?.avatar,
       ptsA: pair[0]?.points || 0,
       ptsB: pair[1]?.points || 0,
     };
@@ -214,11 +287,10 @@ export default async function Home() {
                         </div>
                       </div>
                       <div className="flex items-center gap-5">
-                        <span className="text-xs text-white/25 tabular-nums hidden sm:block">{team.points.toFixed(1)} pts</span>
-                        <span className="text-xs text-white/35 tabular-nums w-10 text-right">{team.wins}–{team.losses}</span>
+                        <span className="text-xs text-white/25 tabular-nums hidden sm:block">{team.wins}–{team.losses}</span>
                         <div className="w-14 text-right">
                           <span className={`text-sm font-semibold tabular-nums ${index === 0 ? 'text-emerald-400' : 'text-white/60'}`}>
-                            {team.powerScore.toFixed(1)}
+                            {IS_OFFSEASON ? `#${index + 1}` : team.powerScore.toFixed(1)}
                           </span>
                         </div>
                       </div>
@@ -229,7 +301,7 @@ export default async function Home() {
                   </div>
                 ))}
               </div>
-              <p className="text-[10px] text-white/15 mt-2 text-right tracking-wide">Score = (wins × 3) + (points ÷ 100)</p>
+              {!IS_OFFSEASON && <p className="text-[10px] text-white/15 mt-2 text-right tracking-wide">Score = (wins × 3) + (points ÷ 100)</p>}
             </section>
 
             {/* Matchup Recaps */}
@@ -274,8 +346,8 @@ export default async function Home() {
                         </div>
                       </div>
                       <p className="text-xs text-white/30 italic border-t border-white/[0.04] pt-3">
-                        AI recap loading...
-                      </p>
+  {recaps[index] || "AI recap loading..."}
+</p>
                     </div>
                   ))}
                 </div>
@@ -293,23 +365,10 @@ export default async function Home() {
                   {IS_OFFSEASON ? "Preseason" : `Week ${CURRENT_WEEK}`}
                 </span>
               </div>
-              {IS_OFFSEASON ? (
-                <div className="rounded-2xl border border-white/[0.06] px-6 py-8 text-center">
-                  <p className="text-white/20 text-sm">Rankings movement will appear here after week 2.</p>
-                  <p className="text-white/10 text-xs mt-1">We need two weeks of data to show who's climbing and who's dropping.</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="border border-white/[0.06] rounded-xl px-5 py-4">
-                    <p className="text-[10px] text-emerald-400/60 uppercase tracking-widest mb-3">Rising</p>
-                    <p className="text-white/20 text-xs">Data loads after week 2</p>
-                  </div>
-                  <div className="border border-white/[0.06] rounded-xl px-5 py-4">
-                    <p className="text-[10px] text-red-400/60 uppercase tracking-widest mb-3">Falling</p>
-                    <p className="text-white/20 text-xs">Data loads after week 2</p>
-                  </div>
-                </div>
-              )}
+              <div className="rounded-2xl border border-white/[0.06] px-6 py-8 text-center">
+                <p className="text-white/20 text-sm">Rankings movement will appear here after week 2.</p>
+                <p className="text-white/10 text-xs mt-1">We need two weeks of data to show who's climbing and who's dropping.</p>
+              </div>
             </section>
 
             {/* Best Performances */}
@@ -323,22 +382,10 @@ export default async function Home() {
                   {IS_OFFSEASON ? "Preseason" : `Week ${CURRENT_WEEK}`}
                 </span>
               </div>
-              {IS_OFFSEASON ? (
-                <div className="rounded-2xl border border-white/[0.06] px-6 py-8 text-center">
-                  <p className="text-white/20 text-sm">Top performers by position will appear here after week 1.</p>
-                  <p className="text-white/10 text-xs mt-1">QB · RB · WR · TE — best and worst of the week across your league.</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {["QB", "RB", "WR", "TE"].map(pos => (
-                    <div key={pos} className="border border-white/[0.06] rounded-xl px-4 py-4">
-                      <p className="text-[10px] text-white/30 uppercase tracking-widest mb-2">{pos}</p>
-                      <p className="text-sm font-medium text-white/80">—</p>
-                      <p className="text-xs text-emerald-400 mt-1">0.0 pts</p>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <div className="rounded-2xl border border-white/[0.06] px-6 py-8 text-center">
+                <p className="text-white/20 text-sm">Top performers by position will appear here after week 1.</p>
+                <p className="text-white/10 text-xs mt-1">QB · RB · WR · TE — best and worst of the week across your league.</p>
+              </div>
             </section>
 
             {/* Team of the Week */}
@@ -352,16 +399,10 @@ export default async function Home() {
                   {IS_OFFSEASON ? "Preseason" : `Week ${CURRENT_WEEK}`}
                 </span>
               </div>
-              {IS_OFFSEASON ? (
-                <div className="rounded-2xl border border-white/[0.06] px-6 py-8 text-center">
-                  <p className="text-white/20 text-sm">The highest scoring team of the week will be crowned here.</p>
-                  <p className="text-white/10 text-xs mt-1">Includes their full lineup breakdown.</p>
-                </div>
-              ) : (
-                <div className="border border-white/[0.06] rounded-2xl px-6 py-5">
-                  <p className="text-white/20 text-sm">Loading...</p>
-                </div>
-              )}
+              <div className="rounded-2xl border border-white/[0.06] px-6 py-8 text-center">
+                <p className="text-white/20 text-sm">The highest scoring team of the week will be crowned here.</p>
+                <p className="text-white/10 text-xs mt-1">Includes their full lineup breakdown.</p>
+              </div>
             </section>
 
           </main>

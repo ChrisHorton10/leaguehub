@@ -137,6 +137,37 @@ export default async function Home() {
     })
     .sort((a, b) => b.preseasonScore - a.preseasonScore);
 
+    // Save this week's rankings and get last week's for comparison
+let lastWeekRanks = {};
+if (!IS_OFFSEASON) {
+  const { data: lastWeekData } = await supabase
+    .from("ranking_history")
+    .select("*")
+    .eq("week", CURRENT_WEEK - 1);
+
+  if (lastWeekData) {
+    lastWeekData.forEach(r => {
+      lastWeekRanks[r.username] = r.rank;
+    });
+  }
+
+  // Save this week's ranks (only if not already saved)
+  const { data: thisWeekExists } = await supabase
+    .from("ranking_history")
+    .select("id")
+    .eq("week", CURRENT_WEEK)
+    .limit(1);
+
+  if (!thisWeekExists || thisWeekExists.length === 0) {
+    const rows = rankings.map((team, index) => ({
+      week: CURRENT_WEEK,
+      username: team.username,
+      rank: index + 1
+    }));
+    await supabase.from("ranking_history").insert(rows);
+  }
+}
+
   // Get blurbs from cache or generate
   let blurbs = [];
   const { data: cachedBlurbs } = await supabase
@@ -365,10 +396,47 @@ if (!IS_OFFSEASON) {
                   {IS_OFFSEASON ? "Preseason" : `Week ${CURRENT_WEEK}`}
                 </span>
               </div>
-              <div className="rounded-2xl border border-white/[0.06] px-6 py-8 text-center">
-                <p className="text-white/20 text-sm">Rankings movement will appear here after week 2.</p>
-                <p className="text-white/10 text-xs mt-1">We need two weeks of data to show who's climbing and who's dropping.</p>
-              </div>
+              {IS_OFFSEASON || Object.keys(lastWeekRanks).length === 0 ? (
+                <div className="rounded-2xl border border-white/[0.06] px-6 py-8 text-center">
+                  <p className="text-white/20 text-sm">Rankings movement will appear here after week 2.</p>
+                  <p className="text-white/10 text-xs mt-1">We need two weeks of data to show who's climbing and who's dropping.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="border border-white/[0.06] rounded-xl px-5 py-4">
+                    <p className="text-[10px] text-emerald-400/60 uppercase tracking-widest mb-3">Rising</p>
+                    <div className="flex flex-col gap-2">
+                      {rankings
+                        .map((team, index) => ({ ...team, currentRank: index + 1, movement: (lastWeekRanks[team.username] || 99) - (index + 1) }))
+                        .filter(t => t.movement > 0)
+                        .sort((a, b) => b.movement - a.movement)
+                        .slice(0, 3)
+                        .map(t => (
+                          <div key={t.username} className="flex items-center justify-between text-xs">
+                            <span className="text-white/70">{t.teamName}</span>
+                            <span className="text-emerald-400 font-mono">↑{t.movement}</span>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                  <div className="border border-white/[0.06] rounded-xl px-5 py-4">
+                    <p className="text-[10px] text-red-400/60 uppercase tracking-widest mb-3">Falling</p>
+                    <div className="flex flex-col gap-2">
+                      {rankings
+                        .map((team, index) => ({ ...team, currentRank: index + 1, movement: (lastWeekRanks[team.username] || 99) - (index + 1) }))
+                        .filter(t => t.movement < 0)
+                        .sort((a, b) => a.movement - b.movement)
+                        .slice(0, 3)
+                        .map(t => (
+                          <div key={t.username} className="flex items-center justify-between text-xs">
+                            <span className="text-white/70">{t.teamName}</span>
+                            <span className="text-red-400 font-mono">↓{Math.abs(t.movement)}</span>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                </div>
+              )}
             </section>
 
             {/* Best Performances */}

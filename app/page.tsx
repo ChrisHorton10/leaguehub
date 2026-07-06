@@ -218,7 +218,38 @@ if (!IS_OFFSEASON) {
     if (!matchupMap[m.matchup_id]) matchupMap[m.matchup_id] = [];
     matchupMap[m.matchup_id].push(m);
   });
+// Best performances by position
+let bestByPosition = {};
+if (!IS_OFFSEASON) {
+  try {
+    const statsRes = await fetch(`https://api.sleeper.app/v1/stats/nfl/regular/2026/${CURRENT_WEEK}`, { cache: "no-store" });
+    const weekStats = await statsRes.json();
 
+    const allStartedPlayerIds = new Set();
+    matchups.forEach(m => {
+      (m.starters || []).forEach(id => allStartedPlayerIds.add(id));
+    });
+
+    const positionBests = { QB: null, RB: null, WR: null, TE: null };
+
+    allStartedPlayerIds.forEach(id => {
+      const player = allPlayers[id];
+      const stats = weekStats[id];
+      if (!player || !stats || !player.position) return;
+      const pts = stats.pts_ppr || stats.pts_half_ppr || stats.pts_std || 0;
+      const pos = player.position;
+      if (positionBests[pos] !== undefined) {
+        if (!positionBests[pos] || pts > positionBests[pos].pts) {
+          positionBests[pos] = { name: player.full_name, pts, position: pos };
+        }
+      }
+    });
+
+    bestByPosition = positionBests;
+  } catch (e) {
+    console.log("Could not fetch week stats");
+  }
+}
   const games = Object.values(matchupMap).map(pair => {
     const rosterA = rosters.find(r => r.roster_id === pair[0]?.roster_id);
     const rosterB = rosters.find(r => r.roster_id === pair[1]?.roster_id);
@@ -450,10 +481,25 @@ if (!IS_OFFSEASON) {
                   {IS_OFFSEASON ? "Preseason" : `Week ${CURRENT_WEEK}`}
                 </span>
               </div>
-              <div className="rounded-2xl border border-white/[0.06] px-6 py-8 text-center">
-                <p className="text-white/20 text-sm">Top performers by position will appear here after week 1.</p>
-                <p className="text-white/10 text-xs mt-1">QB · RB · WR · TE — best and worst of the week across your league.</p>
-              </div>
+{IS_OFFSEASON ? (
+                <div className="rounded-2xl border border-white/[0.06] px-6 py-8 text-center">
+                  <p className="text-white/20 text-sm">Top performers by position will appear here after week 1.</p>
+                  <p className="text-white/10 text-xs mt-1">QB · RB · WR · TE — best and worst of the week across your league.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {["QB", "RB", "WR", "TE"].map(pos => {
+                    const best = bestByPosition[pos];
+                    return (
+                      <div key={pos} className="border border-white/[0.06] rounded-xl px-4 py-4">
+                        <p className="text-[10px] text-white/30 uppercase tracking-widest mb-2">{pos}</p>
+                        <p className="text-sm font-medium text-white/80">{best ? best.name : "—"}</p>
+                        <p className="text-xs text-emerald-400 mt-1">{best ? best.pts.toFixed(1) : "0.0"} pts</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </section>
 
             {/* Team of the Week */}

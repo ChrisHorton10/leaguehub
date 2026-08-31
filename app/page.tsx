@@ -10,7 +10,7 @@ const supabase = createClient(
 );
 
 const LEAGUE_ID = "1330820695583625216";
-const CURRENT_WEEK = 1;
+const CURRENT_WEEK = 1; // deploy trigger
 const IS_OFFSEASON = true;
 
 const MANAGER_NICKNAMES = {

@@ -64,7 +64,7 @@ const MANAGER_PERSONAS = {
   }
 };
 
-export async function generateTeamBlurbs(rankings, isOffseason, week, rosterInjuries = {}, rosterPlayers = {}) {
+export async function generateTeamBlurbs(rankings: any[], isOffseason: boolean, week: number, rosterInjuries: any = {}, rosterPlayers: any = {}) {
   const teamSummaries = rankings.map((team, index) => {
     const persona = MANAGER_PERSONAS[team.username];
     const nickname = persona?.nickname || team.username;

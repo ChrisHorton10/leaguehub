@@ -1,4 +1,4 @@
-export async function getClaudeRosterScores(teams) {
+export async function getClaudeRosterScores(teams: any[]) {
   const teamSummaries = teams.map((team, index) => {
     return `Team ${index + 1}: ${team.teamName} (${team.nickname})
 Key starters: ${team.starters.join(", ")}

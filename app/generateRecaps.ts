@@ -1,4 +1,4 @@
-export async function generateMatchupRecaps(games, week) {
+export async function generateMatchupRecaps(games: any[], week: number) {
     const gameSummaries = games.map((game, index) => {
       return `Matchup ${index + 1}:
   ${game.teamA} (${game.managerA}) scored ${game.ptsA.toFixed(2)} points

@@ -16,51 +16,51 @@ export const LAST_YEAR_FINISH = {
 const MANAGER_PERSONAS = {
   "chrishorton10": {
     nickname: "Commish",
-    context: "Commissioner. Cowboys fan, gambler. Has Trevor Lawrence who bounced back strong in 2025. Runs the league. Known as NATO — no one fully trusts his impartial ruling. Self deprecating about his own team is fine."
+    context: "Commissioner. Cowboys die-hard with unwavering, almost delusional confidence in his team every year — mirrors his confidence in his fantasy squad. Has the power to make rulings but would never abuse it (joke about having the power is fine). Has Trevor Lawrence who bounced back in 2025. Never make him the villain — lean into the Cowboys blind faith angle."
   },
   "BCregg": {
     nickname: "Cregg",
-    context: "Giants fan. Knows the game deeply. Competitive, passionate, gets heated. Loves to gamble. Known as Germany — aggressive, calculated. Reference Germany but avoid historical atrocity jokes. His RB situation has injury concerns which is a real weakness despite his strong QB."
+    context: "Giants fan. Knows the game deeply. Competitive, passionate, gets heated. Loves to gamble. Known as Germany — reference it once, not repeatedly. Was pushed out as manager of the league softball team just a few games in. His RB room has injury concerns but Kenneth Walker was a Super Bowl MVP and should be back, Chase Brown is a dawg. Pollard is a nobody on a bad team. Do not make multiple Germany references."
   },
   "ScubaSteve0709": {
     nickname: "Scuba Steve",
-    context: "Lives in Cincinnati away from the group. Laid back. A sleeping giant — dangerous when awake. Has Hurts and CeeDee as his foundation."
+    context: "Lives in Cincinnati away from everyone else. Laid back personality. Has Hurts and CeeDee as his foundation plus Justin Jefferson. The sleeping giant angle is fine but make the first line actually funny and interesting — not generic. Avoid saying he will be unbothered until week 7, that makes no sense."
   },
   "kmyers": {
     nickname: "Kyle",
-    context: "Browns and Nebraska fan — two historically painful fanbases. Lovable guy. Kyle Pitts had a massive 2025 bounce back. Mixed trade history, has been a trade pinata at times. Roster has real depth concerns."
+    context: "Browns and Nebraska fan — two historically painful fanbases. Lovable guy. Has Lamar Jackson and Kyle Pitts who bounced back in 2025. Just acquired Zay Flowers. His running back room is genuinely brutal — thin on both talent and depth. Has been a trade pinata in the past. The roster has Lamar and Pitts but not much else of note."
   },
   "Sher2Lose": {
     nickname: "Sherlock",
-    context: "Bengals fan. Short. Full rebuild — actively tanking for the number one pick. Takes gambling breaks to save himself. Known as France — irrelevant but always in the middle of things. Reference France directly."
+    context: "Bengals fan. Short. Full rebuild and not hiding it — tanking openly. All his eggs are in the basket of the Bengals season — his fantasy team, his real life fandom, and he has actual money on Bengals player outcomes. Michigan had a rough year too. Takes gambling breaks to save himself. Known as France — reference it once. CJ Stroud and George Pickens are real pieces."
   },
   "Broth22": {
     nickname: "Brothers",
-    context: "Back to back league champion. Stacked roster. Doesn't trade much, just wins. Nice guy, occasionally seems unbothered but keeps winning. Whipped but nobody holds it against him."
+    context: "Back to back league champion. Stacked roster. Doesn't trade much, just wins. Nice guy, low key, occasionally seems unbothered but keeps winning. Whipped but nobody holds it against him."
   },
   "shazman123": {
     nickname: "Shaz",
-    context: "Pakistani. Packers fan. Has Bijan Robinson, Ja'Marr Chase, Drake London, Brian Thomas. Knows football better than most. Gets minority jokes from the group but is genuinely dangerous every year."
+    context: "Pakistani. Packers fan. Has Bijan Robinson, Ja'Marr Chase, Drake London, Brian Thomas. Knows football better than most. The group makes terrorist jokes or jokes about him being a Brewers superfan — weave one in naturally. Genuinely one of the most dangerous rosters in the league."
   },
   "ctracewell": {
     nickname: "Tracewell",
-    context: "Wannabe DJ. Browns fan. Made the championship last year but got lucky. Roster is aging badly. Racing Sherlock to the bottom for the number one pick. Window is fully closed."
+    context: "Wannabe DJ. Browns fan. Made the championship last year but got lucky. Fully tanking now and not hiding it at all — openly racing Sherlock to the bottom for the number one pick. Roster is old and uncompetitive. Jayden Daniels is the one bright spot."
   },
   "GrimaceHugeSack": {
     nickname: "Grimace",
-    context: "Packers fan. Has Gibbs and Jeanty as his RB core. Building quietly. Focus on his actual roster situation."
+    context: "Packers fan. Has Gibbs and Jeanty as his RB core — that is genuinely dangerous. AJ Brown is a real WR1. Malik Willis at QB is a massive problem — he has no proof he can start in the NFL, especially on the Dolphins. Do not hype Jayden Reed as a fantasy threat — he has never been a top 20 WR. Focus on the RB upside and the QB problem."
   },
   "Bdug14": {
     nickname: "Dlugos",
-    context: "Browns fan. Known as Russia — unconditional love for his team, aggressive GM, league villain energy. 13-1 last regular season but lost in semis. His actual brother helps him manage his team — running inside joke. Just acquired Saquon Barkley. Reference Russia directly."
+    context: "Browns fan. League villain energy — the guy nobody wants to deal with but everyone respects. 13-1 last regular season but lost in semis. His actual brother helps him manage his team — running inside joke with the league. Just acquired Saquon Barkley. Loaded roster. Reference Russia once naturally, not multiple times. End with something punchy like Russia doesn't rebuild, Russia reloads."
   },
   "SamHuman12": {
     nickname: "Sam",
-    context: "Nicest guy in the league. Bears fan, loves Clemson players. Active trader, loaded with picks, team is improving after rough seasons."
+    context: "Bears fan who roots for all Clemson players in the NFL — but is famously pessimistic about Clemson every single year despite loving them. Clubnik just entered the league which means Sam might have to root for the Jets now too. Active trader, loaded with picks. Team is improving. Do not just call him the nicest guy — make it funnier and more specific. Burrow is his QB, Rashee Rice and McMillan are key pieces."
   },
   "Gillilig": {
     nickname: "Gill",
-    context: "Bears fan from rural Ohio. Just acquired Christian McCaffrey. Has Mahomes at QB. Obsessed with Caleb Williams success. Solid WR room. Legitimate contender this year."
+    context: "Bears fan from rural Ohio. Has THREE legit starting QBs — Mahomes, Bo Nix, and Baker Mayfield. Rides the hot hand at QB week to week. Do not assume who starts. Just acquired Christian McCaffrey. Solid WR room. Obsessed with Caleb Williams succeeding. High upside team if CMC stays healthy."
   }
 };
 

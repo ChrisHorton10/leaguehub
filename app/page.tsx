@@ -13,7 +13,7 @@ const LEAGUE_ID = "1330820695583625216";
 const CURRENT_WEEK = 1; // deploy trigger
 const IS_OFFSEASON = true;
 
-const MANAGER_NICKNAMES = {
+const MANAGER_NICKNAMES: Record<string, string> = {
   "chrishorton10": "Commish",
   "BCregg": "Cregg",
   "ScubaSteve0709": "Scuba Steve",
@@ -45,8 +45,8 @@ async function getLeagueData() {
 export default async function Home() {
   const { rosters, users, matchups } = await getLeagueData();
 
-  const userMap = {};
-  users.forEach(user => {
+  const userMap: Record<string, any> = {};
+  users.forEach((user: any) => {
     userMap[user.user_id] = {
       name: user.metadata?.team_name || user.display_name,
       username: user.display_name,
@@ -54,9 +54,8 @@ export default async function Home() {
     };
   });
 
-  // Fetch player data and projections
-  let allPlayers = {};
-  let weekProjections = {};
+  let allPlayers: Record<string, any> = {};
+  let weekProjections: Record<string, any> = {};
   try {
     const [playersRes, projectionsRes] = await Promise.all([
       fetch("https://api.sleeper.app/v1/players/nfl", { cache: "no-store" }),
@@ -68,79 +67,67 @@ export default async function Home() {
     console.log("Could not fetch players or projections", e);
   }
 
-  // Build roster data using Sleeper's actual starters
-  const rosterInjuries = {};
-  const rosterPlayers = {};
-  const rosterScores = {};
-  const rosterTeamData = [];
+  const rosterInjuries: Record<string, any[]> = {};
+  const rosterPlayers: Record<string, string[]> = {};
+  const rosterScores: Record<string, number> = {};
+  const rosterTeamData: any[] = [];
 
-  rosters.forEach(roster => {
+  rosters.forEach((roster: any) => {
     const user = userMap[roster.owner_id];
     if (!user) return;
 
-    // Use Sleeper's actual starter slots for projected points
-    const actualStarters = (roster.starters || []).map(id => {
+    const actualStarters = (roster.starters || []).map((id: string) => {
       const player = allPlayers[id];
       const proj = weekProjections[id];
       const pts = proj?.pts_ppr || 0;
-      if (!player) {
-        return { player_id: id, full_name: id, position: "DST", pts_ppr: pts };
-      }
+      if (!player) return { player_id: id, full_name: id, position: "DST", pts_ppr: pts };
       return { ...player, player_id: id, pts_ppr: pts };
     });
 
-    const projectedPts = actualStarters.reduce((sum, p) => sum + (p.pts_ppr || 0), 0);
+    const projectedPts = actualStarters.reduce((sum: number, p: any) => sum + (p.pts_ppr || 0), 0);
 
-    // Skill position starters for Claude analysis (no K or DST)
-    const startingLineup = actualStarters.filter(p =>
+    const startingLineup = actualStarters.filter((p: any) =>
       p.full_name && ["QB", "RB", "WR", "TE"].includes(p.position)
     );
 
-    // Bench depth — non-starters sorted by projected points
-    const starterIds = new Set(actualStarters.map(p => p.player_id));
-    const taxiIds = new Set(roster.taxi || []);
-    const reserveIds = new Set(roster.reserve || []);
+    const starterIds = new Set(actualStarters.map((p: any) => p.player_id));
+    const taxiIds = new Set((roster.taxi || []) as string[]);
+    const reserveIds = new Set((roster.reserve || []) as string[]);
 
     const benchPlayers = (roster.players || [])
-      .filter(id => !starterIds.has(id) && !taxiIds.has(id) && !reserveIds.has(id))
-      .map(id => {
+      .filter((id: string) => !starterIds.has(id) && !taxiIds.has(id) && !reserveIds.has(id))
+      .map((id: string) => {
         const player = allPlayers[id];
         const proj = weekProjections[id];
         return { ...player, player_id: id, pts_ppr: proj?.pts_ppr || 0 };
       })
-      .filter(p => p && p.full_name && ["QB", "RB", "WR", "TE"].includes(p.position))
-      .sort((a, b) => b.pts_ppr - a.pts_ppr)
+      .filter((p: any) => p && p.full_name && ["QB", "RB", "WR", "TE"].includes(p.position))
+      .sort((a: any, b: any) => b.pts_ppr - a.pts_ppr)
       .slice(0, 5);
 
-    const benchScore = benchPlayers.reduce((sum, p) => sum + (p.pts_ppr || 0), 0);
+    const benchScore = benchPlayers.reduce((sum: number, p: any) => sum + (p.pts_ppr || 0), 0);
     const lineupScore = (projectedPts * 0.75) + (benchScore * 0.25);
 
     rosterScores[user.username] = lineupScore;
-    rosterPlayers[user.username] = startingLineup.map(p => `${p.full_name} (${p.position})`);
+    rosterPlayers[user.username] = startingLineup.map((p: any) => `${p.full_name} (${p.position})`);
 
-    console.log(`${user.username}: projected=${projectedPts.toFixed(1)} bench=${benchScore.toFixed(1)} total=${lineupScore.toFixed(1)}`);
-
-    // Injuries
     const injured = (roster.players || [])
-      .map(id => allPlayers[id])
-      .filter(p => p && p.injury_status && ["Out", "IR", "Doubtful", "Questionable"].includes(p.injury_status))
-      .map(p => `${p.full_name} (${p.injury_status})`);
-    if (injured.length > 0) {
-      rosterInjuries[user.username] = injured;
-    }
+      .map((id: string) => allPlayers[id])
+      .filter((p: any) => p && p.injury_status && ["Out", "IR", "Doubtful", "Questionable"].includes(p.injury_status))
+      .map((p: any) => `${p.full_name} (${p.injury_status})`);
+    if (injured.length > 0) rosterInjuries[user.username] = injured;
 
     rosterTeamData.push({
       username: user.username,
       teamName: user.name || user.username,
       nickname: MANAGER_NICKNAMES[user.username] || user.username,
-      starters: startingLineup.map(p => `${p.full_name} (${p.position}) proj:${p.pts_ppr.toFixed(1)}`),
-      bench: benchPlayers.map(p => `${p.full_name} (${p.position}) proj:${p.pts_ppr.toFixed(1)}`),
+      starters: startingLineup.map((p: any) => `${p.full_name} (${p.position}) proj:${p.pts_ppr.toFixed(1)}`),
+      bench: benchPlayers.map((p: any) => `${p.full_name} (${p.position}) proj:${p.pts_ppr.toFixed(1)}`),
       projectedPts
     });
   });
 
-  // Get Claude roster scores with caching
-  let claudeScores = {};
+  let claudeScores: Record<string, number> = {};
   try {
     const { data: cachedScores } = await supabase
       .from("roster_scores_cache")
@@ -166,12 +153,8 @@ export default async function Home() {
     console.log("Could not get Claude scores", e);
   }
 
-  console.log("Claude scores:", claudeScores);
-  console.log("Roster scores:", rosterScores);
-
-  // Build rankings — 70% projected pts, 30% Claude qualitative
   const rankings = rosters
-    .map(roster => {
+    .map((roster: any) => {
       const user = userMap[roster.owner_id];
       const username = user?.username || "Unknown";
       const wins = roster.settings.wins || 0;
@@ -192,10 +175,9 @@ export default async function Home() {
         preseasonScore: finalScore
       };
     })
-    .sort((a, b) => b.powerScore - a.powerScore);
+    .sort((a: any, b: any) => b.powerScore - a.powerScore);
 
-  // Get blurbs from cache or generate
-  let blurbs = [];
+  let blurbs: string[] = [];
   const { data: cachedBlurbs } = await supabase
     .from("blurbs_cache")
     .select("*")
@@ -215,16 +197,15 @@ export default async function Home() {
     }]);
   }
 
-  // Build matchups
-  const matchupMap = {};
-  matchups.forEach(m => {
+  const matchupMap: Record<string, any[]> = {};
+  matchups.forEach((m: any) => {
     if (!matchupMap[m.matchup_id]) matchupMap[m.matchup_id] = [];
     matchupMap[m.matchup_id].push(m);
   });
 
-  const games = Object.values(matchupMap).map(pair => {
-    const rosterA = rosters.find(r => r.roster_id === pair[0]?.roster_id);
-    const rosterB = rosters.find(r => r.roster_id === pair[1]?.roster_id);
+  const games = Object.values(matchupMap).map((pair: any[]) => {
+    const rosterA = rosters.find((r: any) => r.roster_id === pair[0]?.roster_id);
+    const rosterB = rosters.find((r: any) => r.roster_id === pair[1]?.roster_id);
     const userA = userMap[rosterA?.owner_id];
     const userB = userMap[rosterB?.owner_id];
     return {
@@ -240,8 +221,7 @@ export default async function Home() {
     };
   });
 
-  // Matchup recaps
-  let recaps = [];
+  let recaps: string[] = [];
   if (!IS_OFFSEASON) {
     const { data: cachedRecaps } = await supabase
       .from("matchup_recaps")
@@ -250,11 +230,11 @@ export default async function Home() {
       .order("matchup_id", { ascending: true });
 
     if (cachedRecaps && cachedRecaps.length > 0) {
-      recaps = cachedRecaps.map(r => r.recap);
+      recaps = cachedRecaps.map((r: any) => r.recap);
     } else {
       recaps = await generateMatchupRecaps(games, CURRENT_WEEK);
       await Promise.all(
-        recaps.map((recap, i) =>
+        recaps.map((recap: string, i: number) =>
           supabase.from("matchup_recaps").insert([{
             week: CURRENT_WEEK,
             matchup_id: games[i].matchup_id,
@@ -265,8 +245,7 @@ export default async function Home() {
     }
   }
 
-  // Last week rankings for risers/fallers
-  let lastWeekRanks = {};
+  let lastWeekRanks: Record<string, number> = {};
   if (!IS_OFFSEASON) {
     const { data: lastWeekData } = await supabase
       .from("ranking_history")
@@ -274,7 +253,7 @@ export default async function Home() {
       .eq("week", CURRENT_WEEK - 1);
 
     if (lastWeekData) {
-      lastWeekData.forEach(r => {
+      lastWeekData.forEach((r: any) => {
         lastWeekRanks[r.username] = r.rank;
       });
     }
@@ -286,7 +265,7 @@ export default async function Home() {
       .limit(1);
 
     if (!thisWeekExists || thisWeekExists.length === 0) {
-      const rows = rankings.map((team, index) => ({
+      const rows = rankings.map((team: any, index: number) => ({
         week: CURRENT_WEEK,
         username: team.username,
         rank: index + 1
@@ -295,8 +274,7 @@ export default async function Home() {
     }
   }
 
-  // Hot & Cold
-  let hotColdData = { hot: [], cold: [] };
+  let hotColdData = { hot: [] as any[], cold: [] as any[] };
   if (!IS_OFFSEASON && CURRENT_WEEK >= 3) {
     try {
       const statsRes = await fetch(`https://api.sleeper.app/v1/stats/nfl/regular/2026/${CURRENT_WEEK}`, { cache: "no-store" });
@@ -311,7 +289,7 @@ export default async function Home() {
   return (
     <div className="min-h-screen bg-[#080808] text-white" style={{fontFamily: "'Inter', system-ui, sans-serif"}}>
 
-      <nav className="border-b border-white/[0.06] px-6 py-4 sticky top-0 bg-[#080808]/95 backdrop-blur-md z-10">
+      <nav className="border-b border-white/[0.06] px-4 py-4 sticky top-0 bg-[#080808]/95 backdrop-blur-md z-10">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500 text-black font-black text-xs tracking-tight">
@@ -326,123 +304,123 @@ export default async function Home() {
         </div>
       </nav>
 
-      <div className="border-b border-white/[0.06] px-6 py-10">
+      <div className="border-b border-white/[0.06] px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <p className="text-[10px] tracking-widest uppercase text-emerald-500/70 mb-2">
             {IS_OFFSEASON ? "Offseason Edition" : `Week ${CURRENT_WEEK} Recap`}
           </p>
-          <h1 className="text-3xl font-bold tracking-tight text-white">League Hub</h1>
-          <p className="text-white/30 text-sm mt-1">
+          <h1 className="text-2xl font-bold tracking-tight text-white">League Hub</h1>
+          <p className="text-white/40 text-sm mt-1">
             {IS_OFFSEASON ? "Season hasn't started yet. Check back week 1 for the full breakdown." : `Everything you need to know from week ${CURRENT_WEEK}.`}
           </p>
         </div>
       </div>
 
-      <main className="max-w-4xl mx-auto px-6 py-10 flex flex-col gap-14">
+      <main className="max-w-4xl mx-auto px-4 py-8 flex flex-col gap-12">
 
+        {/* Power Rankings */}
         <section>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-              <h2 className="text-sm font-semibold tracking-tight">Power Rankings</h2>
+              <div className="w-1 h-5 bg-emerald-500 rounded-full" />
+              <h2 className="text-base font-semibold tracking-tight">Power Rankings</h2>
             </div>
             <span className="text-[10px] text-white/20 tracking-widest uppercase">
               {IS_OFFSEASON ? "Preseason" : `Week ${CURRENT_WEEK}`}
             </span>
           </div>
           <div className="rounded-2xl border border-white/[0.06] overflow-hidden">
-            {rankings.map((team, index) => (
+            {rankings.map((team: any, index: number) => (
               <div
                 key={index}
-                className={`flex flex-col px-5 py-4 border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors ${index === 0 ? 'bg-emerald-950/20' : ''}`}
+                className={`flex flex-col px-4 py-5 border-b border-white/[0.06] last:border-0 ${index === 0 ? 'bg-emerald-950/20' : ''}`}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3.5">
-                    <span className="text-white/20 text-xs font-mono w-4 text-center tabular-nums">
-                      {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg w-6 text-center">
+                      {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : <span className="text-white/40 text-sm font-bold">#{index + 1}</span>}
                     </span>
                     {team.avatar ? (
                       <img
                         src={`https://sleepercdn.com/avatars/thumbs/${team.avatar}`}
                         alt={team.username}
-                        className="w-7 h-7 rounded-full object-cover ring-1 ring-white/10"
+                        className="w-9 h-9 rounded-full object-cover ring-1 ring-white/20"
                       />
                     ) : (
-                      <div className="w-7 h-7 rounded-full bg-white/10 ring-1 ring-white/5" />
+                      <div className="w-9 h-9 rounded-full bg-white/10" />
                     )}
                     <div>
-                      <p className="text-sm font-medium leading-tight">{team.teamName}</p>
-                      <p className="text-[11px] text-white/25 leading-tight mt-0.5">@{team.username}</p>
+                      <p className="text-base font-semibold text-white leading-tight">{team.teamName}</p>
+                      <p className="text-xs text-white/40 leading-tight mt-0.5">@{team.username} · {team.wins}–{team.losses}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-5">
-                    {!IS_OFFSEASON && lastWeekRanks[team.username] && (
-                      <span className={`text-xs font-mono w-8 text-center ${
-                        lastWeekRanks[team.username] > index + 1 ? 'text-emerald-400' :
-                        lastWeekRanks[team.username] < index + 1 ? 'text-red-400' : 'text-white/20'
-                      }`}>
-                        {lastWeekRanks[team.username] > index + 1 ? `↑${lastWeekRanks[team.username] - (index + 1)}` :
-                         lastWeekRanks[team.username] < index + 1 ? `↓${(index + 1) - lastWeekRanks[team.username]}` : '—'}
-                      </span>
-                    )}
-                    <span className="text-xs text-white/25 tabular-nums hidden sm:block">{team.wins}–{team.losses}</span>
-                    <div className="w-14 text-right">
-                      <span className={`text-sm font-semibold tabular-nums ${index === 0 ? 'text-emerald-400' : 'text-white/60'}`}>
-                        {IS_OFFSEASON ? `#${index + 1}` : team.powerScore.toFixed(1)}
+                  {!IS_OFFSEASON && (
+                    <div className="flex items-center gap-2">
+                      {lastWeekRanks[team.username] && (
+                        <span className={`text-sm font-mono ${
+                          lastWeekRanks[team.username] > index + 1 ? 'text-emerald-400' :
+                          lastWeekRanks[team.username] < index + 1 ? 'text-red-400' : 'text-white/20'
+                        }`}>
+                          {lastWeekRanks[team.username] > index + 1 ? `↑${lastWeekRanks[team.username] - (index + 1)}` :
+                           lastWeekRanks[team.username] < index + 1 ? `↓${(index + 1) - lastWeekRanks[team.username]}` : '—'}
+                        </span>
+                      )}
+                      <span className={`text-base font-bold tabular-nums ${index === 0 ? 'text-emerald-400' : 'text-white/60'}`}>
+                        {team.powerScore.toFixed(1)}
                       </span>
                     </div>
-                  </div>
+                  )}
                 </div>
                 {blurbs[index] && (
-                  <p className="text-[11px] text-white/35 italic mt-2 ml-11 leading-snug">{blurbs[index]}</p>
+                  <p className="text-sm text-white/70 leading-relaxed">{blurbs[index]}</p>
                 )}
               </div>
             ))}
           </div>
-          {!IS_OFFSEASON && <p className="text-[10px] text-white/15 mt-2 text-right tracking-wide">Score = projected pts + Claude analysis</p>}
         </section>
 
+        {/* Matchup Recaps */}
         <section>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-              <h2 className="text-sm font-semibold tracking-tight">Matchup Recaps</h2>
+              <div className="w-1 h-5 bg-emerald-500 rounded-full" />
+              <h2 className="text-base font-semibold tracking-tight">Matchup Recaps</h2>
             </div>
             <span className="text-[10px] text-white/20 tracking-widest uppercase">
               {IS_OFFSEASON ? "Preseason" : `Week ${CURRENT_WEEK}`}
             </span>
           </div>
           {IS_OFFSEASON ? (
-            <div className="rounded-2xl border border-white/[0.06] px-6 py-8 text-center">
-              <p className="text-white/20 text-sm">Matchup recaps will appear here after week 1.</p>
-              <p className="text-white/10 text-xs mt-1">Each game will include a score breakdown and AI-generated recap.</p>
+            <div className="rounded-2xl border border-white/[0.06] px-5 py-8 text-center">
+              <p className="text-white/30 text-sm">Matchup recaps will appear here after week 1.</p>
+              <p className="text-white/15 text-xs mt-1">Each game will include a score breakdown and AI-generated recap.</p>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
-              {games.map((game, index) => (
-                <div key={index} className="border border-white/[0.06] rounded-xl px-5 py-4">
+              {games.map((game: any, index: number) => (
+                <div key={index} className="border border-white/[0.06] rounded-xl px-4 py-4">
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <div className="flex items-center gap-2 flex-1 min-w-0">
                       {game.avatarA ? (
-                        <img src={`https://sleepercdn.com/avatars/thumbs/${game.avatarA}`} className="w-6 h-6 rounded-full flex-shrink-0 ring-1 ring-white/10" />
+                        <img src={`https://sleepercdn.com/avatars/thumbs/${game.avatarA}`} className="w-7 h-7 rounded-full flex-shrink-0" />
                       ) : (
-                        <div className="w-6 h-6 rounded-full bg-white/10 flex-shrink-0" />
+                        <div className="w-7 h-7 rounded-full bg-white/10 flex-shrink-0" />
                       )}
-                      <span className="text-xs font-medium text-white/80 truncate">{game.teamA}</span>
-                      <span className="text-sm font-bold text-white ml-auto">{game.ptsA.toFixed(2)}</span>
+                      <span className="text-sm font-medium text-white/80 truncate">{game.teamA}</span>
+                      <span className="text-base font-bold text-white ml-auto">{game.ptsA.toFixed(2)}</span>
                     </div>
-                    <span className="text-[10px] text-white/15 font-mono px-2">vs</span>
+                    <span className="text-xs text-white/20 font-mono px-2">vs</span>
                     <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
-                      <span className="text-sm font-bold text-white mr-auto">{game.ptsB.toFixed(2)}</span>
-                      <span className="text-xs font-medium text-white/80 truncate text-right">{game.teamB}</span>
+                      <span className="text-base font-bold text-white mr-auto">{game.ptsB.toFixed(2)}</span>
+                      <span className="text-sm font-medium text-white/80 truncate text-right">{game.teamB}</span>
                       {game.avatarB ? (
-                        <img src={`https://sleepercdn.com/avatars/thumbs/${game.avatarB}`} className="w-6 h-6 rounded-full flex-shrink-0 ring-1 ring-white/10" />
+                        <img src={`https://sleepercdn.com/avatars/thumbs/${game.avatarB}`} className="w-7 h-7 rounded-full flex-shrink-0" />
                       ) : (
-                        <div className="w-6 h-6 rounded-full bg-white/10 flex-shrink-0" />
+                        <div className="w-7 h-7 rounded-full bg-white/10 flex-shrink-0" />
                       )}
                     </div>
                   </div>
-                  <p className="text-xs text-white/30 italic border-t border-white/[0.04] pt-3">
+                  <p className="text-sm text-white/50 italic border-t border-white/[0.04] pt-3">
                     {recaps[index] || "Recap loading..."}
                   </p>
                 </div>
@@ -451,51 +429,52 @@ export default async function Home() {
           )}
         </section>
 
+        {/* Risers & Fallers */}
         <section>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-              <h2 className="text-sm font-semibold tracking-tight">Risers & Fallers</h2>
+              <div className="w-1 h-5 bg-emerald-500 rounded-full" />
+              <h2 className="text-base font-semibold tracking-tight">Risers & Fallers</h2>
             </div>
             <span className="text-[10px] text-white/20 tracking-widest uppercase">
               {IS_OFFSEASON ? "Preseason" : `Week ${CURRENT_WEEK}`}
             </span>
           </div>
           {IS_OFFSEASON || Object.keys(lastWeekRanks).length === 0 ? (
-            <div className="rounded-2xl border border-white/[0.06] px-6 py-8 text-center">
-              <p className="text-white/20 text-sm">Rankings movement will appear here after week 2.</p>
-              <p className="text-white/10 text-xs mt-1">We need two weeks of data to show who's climbing and who's dropping.</p>
+            <div className="rounded-2xl border border-white/[0.06] px-5 py-8 text-center">
+              <p className="text-white/30 text-sm">Rankings movement will appear here after week 2.</p>
+              <p className="text-white/15 text-xs mt-1">We need two weeks of data to show who's climbing and who's dropping.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="border border-white/[0.06] rounded-xl px-5 py-4">
-                <p className="text-[10px] text-emerald-400/60 uppercase tracking-widest mb-3">Rising</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="border border-white/[0.06] rounded-xl px-4 py-4">
+                <p className="text-xs text-emerald-400/70 uppercase tracking-widest mb-3">Rising</p>
                 <div className="flex flex-col gap-2">
                   {rankings
-                    .map((team, index) => ({ ...team, currentRank: index + 1, movement: (lastWeekRanks[team.username] || 99) - (index + 1) }))
-                    .filter(t => t.movement > 0)
-                    .sort((a, b) => b.movement - a.movement)
+                    .map((team: any, index: number) => ({ ...team, currentRank: index + 1, movement: (lastWeekRanks[team.username] || 99) - (index + 1) }))
+                    .filter((t: any) => t.movement > 0)
+                    .sort((a: any, b: any) => b.movement - a.movement)
                     .slice(0, 3)
-                    .map(t => (
-                      <div key={t.username} className="flex items-center justify-between text-xs">
-                        <span className="text-white/70">{t.teamName}</span>
-                        <span className="text-emerald-400 font-mono">↑{t.movement}</span>
+                    .map((t: any) => (
+                      <div key={t.username} className="flex items-center justify-between">
+                        <span className="text-sm text-white/70">{t.teamName}</span>
+                        <span className="text-sm text-emerald-400 font-mono">↑{t.movement}</span>
                       </div>
                     ))}
                 </div>
               </div>
-              <div className="border border-white/[0.06] rounded-xl px-5 py-4">
-                <p className="text-[10px] text-red-400/60 uppercase tracking-widest mb-3">Falling</p>
+              <div className="border border-white/[0.06] rounded-xl px-4 py-4">
+                <p className="text-xs text-red-400/70 uppercase tracking-widest mb-3">Falling</p>
                 <div className="flex flex-col gap-2">
                   {rankings
-                    .map((team, index) => ({ ...team, currentRank: index + 1, movement: (lastWeekRanks[team.username] || 99) - (index + 1) }))
-                    .filter(t => t.movement < 0)
-                    .sort((a, b) => a.movement - b.movement)
+                    .map((team: any, index: number) => ({ ...team, currentRank: index + 1, movement: (lastWeekRanks[team.username] || 99) - (index + 1) }))
+                    .filter((t: any) => t.movement < 0)
+                    .sort((a: any, b: any) => a.movement - b.movement)
                     .slice(0, 3)
-                    .map(t => (
-                      <div key={t.username} className="flex items-center justify-between text-xs">
-                        <span className="text-white/70">{t.teamName}</span>
-                        <span className="text-red-400 font-mono">↓{Math.abs(t.movement)}</span>
+                    .map((t: any) => (
+                      <div key={t.username} className="flex items-center justify-between">
+                        <span className="text-sm text-white/70">{t.teamName}</span>
+                        <span className="text-sm text-red-400 font-mono">↓{Math.abs(t.movement)}</span>
                       </div>
                     ))}
                 </div>
@@ -504,47 +483,48 @@ export default async function Home() {
           )}
         </section>
 
+        {/* Hot & Cold */}
         <section>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-              <h2 className="text-sm font-semibold tracking-tight">Hot & Cold</h2>
+              <div className="w-1 h-5 bg-emerald-500 rounded-full" />
+              <h2 className="text-base font-semibold tracking-tight">Hot & Cold</h2>
             </div>
             <span className="text-[10px] text-white/20 tracking-widest uppercase">
               {IS_OFFSEASON ? "Preseason" : `Week ${CURRENT_WEEK}`}
             </span>
           </div>
           {IS_OFFSEASON || CURRENT_WEEK < 3 ? (
-            <div className="rounded-2xl border border-white/[0.06] px-6 py-8 text-center">
-              <p className="text-white/20 text-sm">Hot & Cold players will appear here after week 3.</p>
-              <p className="text-white/10 text-xs mt-1">We track 3 weeks of actual vs projected performance to identify trends.</p>
+            <div className="rounded-2xl border border-white/[0.06] px-5 py-8 text-center">
+              <p className="text-white/30 text-sm">Hot & Cold players will appear here after week 3.</p>
+              <p className="text-white/15 text-xs mt-1">We track 3 weeks of actual vs projected performance to identify trends.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="border border-white/[0.06] rounded-xl px-5 py-4">
-                <p className="text-[10px] text-emerald-400/60 uppercase tracking-widest mb-3">🔥 Hot</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="border border-white/[0.06] rounded-xl px-4 py-4">
+                <p className="text-xs text-emerald-400/70 uppercase tracking-widest mb-3">🔥 Hot</p>
                 <div className="flex flex-col gap-3">
-                  {hotColdData.hot.map((p, i) => (
-                    <div key={i} className="flex items-center justify-between text-xs">
+                  {hotColdData.hot.map((p: any, i: number) => (
+                    <div key={i} className="flex items-center justify-between">
                       <div>
-                        <p className="text-white/70 font-medium">{p.name}</p>
-                        <p className="text-white/30">{p.position} · {p.avgActual.toFixed(1)} avg pts</p>
+                        <p className="text-sm text-white/80 font-medium">{p.name}</p>
+                        <p className="text-xs text-white/30">{p.position} · {p.avgActual.toFixed(1)} avg</p>
                       </div>
-                      <span className="text-emerald-400 font-mono">+{p.avgDiff.toFixed(1)}</span>
+                      <span className="text-sm text-emerald-400 font-mono">+{p.avgDiff.toFixed(1)}</span>
                     </div>
                   ))}
                 </div>
               </div>
-              <div className="border border-white/[0.06] rounded-xl px-5 py-4">
-                <p className="text-[10px] text-red-400/60 uppercase tracking-widest mb-3">🥶 Cold</p>
+              <div className="border border-white/[0.06] rounded-xl px-4 py-4">
+                <p className="text-xs text-red-400/70 uppercase tracking-widest mb-3">🥶 Cold</p>
                 <div className="flex flex-col gap-3">
-                  {hotColdData.cold.map((p, i) => (
-                    <div key={i} className="flex items-center justify-between text-xs">
+                  {hotColdData.cold.map((p: any, i: number) => (
+                    <div key={i} className="flex items-center justify-between">
                       <div>
-                        <p className="text-white/70 font-medium">{p.name}</p>
-                        <p className="text-white/30">{p.position} · {p.avgActual.toFixed(1)} avg pts</p>
+                        <p className="text-sm text-white/80 font-medium">{p.name}</p>
+                        <p className="text-xs text-white/30">{p.position} · {p.avgActual.toFixed(1)} avg</p>
                       </div>
-                      <span className="text-red-400 font-mono">{p.avgDiff.toFixed(1)}</span>
+                      <span className="text-sm text-red-400 font-mono">{p.avgDiff.toFixed(1)}</span>
                     </div>
                   ))}
                 </div>
@@ -555,13 +535,13 @@ export default async function Home() {
 
       </main>
 
-      <footer className="border-t border-white/[0.04] px-6 py-6 mt-4">
+      <footer className="border-t border-white/[0.04] px-4 py-6 mt-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="flex items-center justify-center w-5 h-5 rounded bg-emerald-500 text-black font-black text-[8px]">CDL</div>
-            <span className="text-[11px] text-white/20">Chiraq Dynasty League</span>
+            <span className="text-xs text-white/20">Chiraq Dynasty League</span>
           </div>
-          <span className="text-[11px] text-white/15">Powered by Sleeper</span>
+          <span className="text-xs text-white/15">Powered by Sleeper</span>
         </div>
       </footer>
 

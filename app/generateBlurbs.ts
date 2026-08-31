@@ -16,51 +16,51 @@ export const LAST_YEAR_FINISH = {
 const MANAGER_PERSONAS = {
   "chrishorton10": {
     nickname: "Commish",
-    context: "Commissioner. Cowboys die-hard with unwavering, almost delusional confidence in his team every year — mirrors his confidence in his fantasy squad. Has the power to make rulings but would never abuse it (joke about having the power is fine). Has Trevor Lawrence who bounced back in 2025. Never make him the villain — lean into the Cowboys blind faith angle."
+    context: "Commissioner. Cowboys die-hard with unwavering blind faith every year. Strength is his receiver room — Waddle in Denver, Olave, MHJ trying to bounce back. RB room is the real question mark — Bucky Irving, Breece Hall health, Judkins on a bad Browns team. Lean into Cowboys fan delusion and gambling confidence. Do not make him sound noble or like a man of integrity."
   },
   "BCregg": {
     nickname: "Cregg",
-    context: "Giants fan. Knows the game deeply. Competitive, passionate, gets heated. Loves to gamble. Known as Germany — reference it once, not repeatedly. Was pushed out as manager of the league softball team just a few games in. His RB room has injury concerns but Kenneth Walker was a Super Bowl MVP and should be back, Chase Brown is a dawg. Pollard is a nobody on a bad team. Do not make multiple Germany references."
+    context: "Giants fan, Syracuse fan, Buffalo Sabres fan, Yankees fan. Knows the game deeply. Loves to start fights especially when drunk. Huge video game guy — loves Fort, COD, NHL. Big hockey guy. Known as Germany — reference once. Got pushed out as manager of the league softball team a few games in. Kenneth Walker was Super Bowl MVP and coming back, Chase Brown is a dawg, Pollard is worthless. Josh Allen projects around 20-22 points weekly not 35."
   },
   "ScubaSteve0709": {
     nickname: "Scuba Steve",
-    context: "Lives in Cincinnati away from everyone else. Laid back personality. Has Hurts and CeeDee as his foundation plus Justin Jefferson. The sleeping giant angle is fine but make the first line actually funny and interesting — not generic. Avoid saying he will be unbothered until week 7, that makes no sense."
+    context: "Bengals and Saints fan. Purdue Boilermakers fan. Newly engaged. Lives in Cincinnati. JJ McCarthy is actually starting and unproven — do not hype him. Has Hurts and CeeDee as his foundation plus Jefferson. Make the first line actually funny."
   },
   "kmyers": {
     nickname: "Kyle",
-    context: "Browns and Nebraska fan — two historically painful fanbases. Lovable guy. Has Lamar Jackson and Kyle Pitts who bounced back in 2025. Just acquired Zay Flowers. His running back room is genuinely brutal — thin on both talent and depth. Has been a trade pinata in the past. The roster has Lamar and Pitts but not much else of note."
+    context: "Browns fan, Nebraska fan, Hungarian and makes sure people know it. Drives a Tesla. Big sports card guy — sells them on eBay. Into Rocket League. Lovable guy. Has Lamar and Pitts who bounced back in 2025, just got Zay Flowers. Running back room is genuinely brutal — thin on talent and depth. Has been a trade pinata."
   },
   "Sher2Lose": {
     nickname: "Sherlock",
-    context: "Bengals fan. Short. Full rebuild and not hiding it — tanking openly. All his eggs are in the basket of the Bengals season — his fantasy team, his real life fandom, and he has actual money on Bengals player outcomes. Michigan had a rough year too. Takes gambling breaks to save himself. Known as France — reference it once. CJ Stroud and George Pickens are real pieces."
+    context: "Bengals fan. Short. Perennially late to everything. Full rebuild and openly tanking. All his eggs are in the Bengals basket — fantasy team, real life fandom, actual money on Bengals player outcomes. Takes gambling breaks to save himself. Known as France — reference once. CJ Stroud and Pickens are real pieces but the rest is thin."
   },
   "Broth22": {
     nickname: "Brothers",
-    context: "Back to back league champion. Stacked roster. Doesn't trade much, just wins. Nice guy, low key, occasionally seems unbothered but keeps winning. Whipped but nobody holds it against him."
+    context: "Back to back league champion. All time catcher and DH on the softball team — not because he's a good hitter, just ends up there. Sometimes clueless but keeps winning anyway. Nice guy, low key, doesn't trade much. Whipped but nobody holds it against him."
   },
   "shazman123": {
     nickname: "Shaz",
-    context: "Pakistani. Packers fan. Has Bijan Robinson, Ja'Marr Chase, Drake London, Brian Thomas. Knows football better than most. The group makes terrorist jokes or jokes about him being a Brewers superfan — weave one in naturally. Genuinely one of the most dangerous rosters in the league."
+    context: "One of the few minority friends in the group. Pakistani. Lives in Milwaukee. Packers fan. Has Bijan Robinson, Ja'Marr Chase, Drake London, Brian Thomas. Knows football better than most. The group makes terrorist jokes or jokes about him being a security threat — weave one in naturally but keep it light. Genuinely dangerous roster."
   },
   "ctracewell": {
     nickname: "Tracewell",
-    context: "Wannabe DJ. Browns fan. Made the championship last year but got lucky. Fully tanking now and not hiding it at all — openly racing Sherlock to the bottom for the number one pick. Roster is old and uncompetitive. Jayden Daniels is the one bright spot."
+    context: "Browns fan, Ohio State fan. DJ in his spare time — the group gives him grief about it but not mean, more like gentle ribbing. Recently moved to NYC. Whipped by his girlfriend Cate. Sometimes clueless and the group gives him shit for it. Fully tanking and not hiding it — racing Sherlock to the bottom for the number one pick. Jayden Daniels is his one real asset."
   },
   "GrimaceHugeSack": {
     nickname: "Grimace",
-    context: "Packers fan. Has Gibbs and Jeanty as his RB core — that is genuinely dangerous. AJ Brown is a real WR1. Malik Willis at QB is a massive problem — he has no proof he can start in the NFL, especially on the Dolphins. Do not hype Jayden Reed as a fantasy threat — he has never been a top 20 WR. Focus on the RB upside and the QB problem."
+    context: "Packers fan, Michigan fan. Just moved to Milwaukee for a new job. Has Gibbs and Jeanty at RB which is genuinely dangerous. AJ Brown is a real WR1. Malik Willis at QB is a massive problem — unproven, starting for the Dolphins which is a bad franchise. Do not hype Jayden Reed — he has never been a top 20 WR. RB room wins weeks, QB situation loses seasons."
   },
   "Bdug14": {
     nickname: "Dlugos",
-    context: "Browns fan. League villain energy — the guy nobody wants to deal with but everyone respects. 13-1 last regular season but lost in semis. His actual brother helps him manage his team — running inside joke with the league. Just acquired Saquon Barkley. Loaded roster. Reference Russia once naturally, not multiple times. End with something punchy like Russia doesn't rebuild, Russia reloads."
+    context: "Browns fan, OSU fan. Constantly talking about going to the gym and getting big. League villain energy. 13-1 last regular season but lost in semis. His actual brother helps him manage — running inside joke. Just acquired Saquon Barkley. Reference Russia once naturally. End punchy — Russia doesn't rebuild, Russia reloads."
   },
   "SamHuman12": {
     nickname: "Sam",
-    context: "Bears fan who roots for all Clemson players in the NFL — but is famously pessimistic about Clemson every single year despite loving them. Clubnik just entered the league which means Sam might have to root for the Jets now too. Active trader, loaded with picks. Team is improving. Do not just call him the nicest guy — make it funnier and more specific. Burrow is his QB, Rashee Rice and McMillan are key pieces."
+    context: "Bears fan who roots for all Clemson players in the NFL but is famously pessimistic about Clemson every year. Cclubnik just entered the league — Sam might have to root for the Jets now to support him. Active trader, loaded with picks. Burrow is his QB, Rashee Rice and McMillan are key pieces. Do not just call him the nicest guy — make it more specific and funnier."
   },
   "Gillilig": {
     nickname: "Gill",
-    context: "Bears fan from rural Ohio. Has THREE legit starting QBs — Mahomes, Bo Nix, and Baker Mayfield. Rides the hot hand at QB week to week. Do not assume who starts. Just acquired Christian McCaffrey. Solid WR room. Obsessed with Caleb Williams succeeding. High upside team if CMC stays healthy."
+    context: "Bears fan, OSU fan. Lives in Chicago but we make fun of him for being a bandwagon — likes Duke, OSU, and now the Bears. Gay for Caleb Williams and OSU players (not actually gay, running joke). Big sports card guy and into Fortnite and Rocket League. Has Mahomes, Bo Nix, Baker Mayfield — rides the hot hand. Just got CMC but his injury history is very real. Do not oversell this team."
   }
 };
 

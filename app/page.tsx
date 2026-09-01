@@ -322,7 +322,7 @@ export default async function Home() {
         <section>
           <div className="flex items-center justify-between mb-4">
           <div className="mb-6">
-  <h2 className="text-2xl font-bold tracking-tight text-white">
+          <h2 className="text-3xl font-bold tracking-tight text-white">
     {IS_OFFSEASON ? "Preseason Power Rankings" : `Week ${CURRENT_WEEK} Power Rankings`}
   </h2>
   <p className="text-white/30 text-sm mt-1">

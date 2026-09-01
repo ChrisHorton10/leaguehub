@@ -119,11 +119,14 @@ Only reference country nicknames for: Cregg (Germany), Dlugos (Russia), Sherlock
 
 Rules:
 - Use nickname only, never team name
-- Real football analysis first, personality second
-- Reference actual players from their roster
-- Be honest about weaknesses
+- Lead with roster analysis — who are the real difference makers, what are the genuine concerns
+- Use ONLY the players listed in the key players section for each team — do not invent or assume players
+- Reference specific players by name and what they bring to this roster
+- Note any trades or acquisitions as forward-looking context
+- One sharp personality observation or burn per blurb max — the analysis comes first
+- Do not invent personality traits not explicitly stated in the manager context
+- Be honest about weaknesses — if the RB room is bad, say it
 - 4-5 sentences, 75-100 words per blurb
-- No generic clichés
 - Return ONLY a valid JSON array of strings in the same order. No markdown, no extra text.
 
 Teams:
@@ -137,12 +140,16 @@ Write a weekly blurb for each team. Reference their record, recent performance, 
 Only reference country nicknames for: Cregg (Germany), Dlugos (Russia), Sherlock (France), Commish (NATO).
 
 Rules:
-- Use nickname only
-- Football analysis first, personality second
-- 4-5 sentences, 75-100 words
-- Fresh every week
-- Return ONLY a valid JSON array in order. No markdown, no extra text.
-
+- Use nickname only, never team name
+- Lead with roster analysis — who are the real difference makers, what are the genuine concerns
+- Use ONLY the players listed in the key players section for each team — do not invent or assume players
+- Reference specific players by name and what they bring to this roster
+- Note any trades or acquisitions as forward-looking context
+- One sharp personality observation or burn per blurb max — the analysis comes first
+- Do not invent personality traits not explicitly stated in the manager context
+- Be honest about weaknesses — if the RB room is bad, say it
+- 4-5 sentences, 75-100 words per blurb
+- Return ONLY a valid JSON array of strings in the same order. No markdown, no extra text.
 Teams:
 ${teamSummaries}`;
 

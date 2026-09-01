@@ -1,4 +1,4 @@
-export const LAST_YEAR_FINISH = {
+export const LAST_YEAR_FINISH: Record<string, number> = {
   "Broth22": 1,
   "ctracewell": 2,
   "Bdug14": 3,
@@ -13,34 +13,56 @@ export const LAST_YEAR_FINISH = {
   "Sher2Lose": 12
 };
 
-const MANAGER_PERSONAS = {
+const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = {
   "chrishorton10": {
     nickname: "Commish",
-    context: "Commissioner. Cowboys fan with delusional annual confidence. WR room is his strength — Waddle in Denver, Olave, MHJ trying to bounce back. RB room is the real question — Bucky Irving, Breece Hall injury history, Quinshon Judkins on the bad Browns team."
+    context: "Commissioner. Cowboys fan with delusional annual confidence. WR room is his strength — Waddle in Denver, Olave, MHJ trying to bounce back. RB room is the real question — Bucky Irving, Breece Hall injury history, Quinshon Judkins on the bad Browns team. Lean into Cowboys fan confidence not integrity."
   },
   "BCregg": {
     nickname: "Cregg",
-    context: "Giants fan, big hockey guy, starts fights when drunk. Known as Germany — reference once. Got replaced as lineup manager of the league softball team. Kenneth Walker coming back from injury, Chase Brown is legit. Josh Allen projects 20-22 points weekly not 35."
+    context: "Giants fan, big hockey guy, gets into arguments when drunk. Known as Germany — reference once. Got replaced as lineup manager of the league softball team a few games in. Kenneth Walker was Super Bowl MVP and is coming back, Chase Brown is his real RB1 and is a dawg. Pollard is a depth piece not an RB1. Josh Allen projects 20-22 points weekly."
   },
   "ScubaSteve0709": {
     nickname: "Scuba Steve",
-    context: "Bengals and Saints fan. Newly engaged. Lives in Cincinnati away from everyone. Has Jalen Hurts and CeeDee Lamb as his core plus Justin Jefferson. JJ McCarthy is a backup who has not proven anything."
+    context: "Bengals and Saints fan. Purdue Boilermakers fan. Newly engaged. Lives in Cincinnati. Has Jalen Hurts and CeeDee Lamb as his core plus Justin Jefferson. Do not mention JJ McCarthy at all — Hurts is the guy. Make the opening interesting without forcing a joke."
   },
   "kmyers": {
     nickname: "Kyle",
-    context: "Browns and Nebraska fan. Hungarian. Drives a Tesla. Sells sports cards on eBay. Has Lamar, Pitts bounce back, just got Zay Flowers. Running back room is genuinely brutal — no real depth or talent there. Has been a trade pinata historically."
+    context: "Browns and Nebraska fan. Hungarian and makes sure people know it. Drives a Tesla. Sells sports cards on eBay. Has Lamar, Pitts who bounced back in 2025, just got Zay Flowers. Running back room is genuinely brutal — thin on both talent and depth. Has been a trade pinata historically. Lead with the football not the personal facts."
   },
   "Sher2Lose": {
     nickname: "Sherlock",
-    context: "Bengals fan. Short. Always late. Openly tanking for the number one pick. Has real money on Bengals players and outcomes. Known as France — reference once. CJ Stroud and Pickens are real pieces but the roster is thin everywhere else."
+    context: "Bengals fan. Short. Always late to everything. Openly tanking for the number one pick. Has real money on Bengals players and outcomes. Known as France — reference once. CJ Stroud and Pickens are real pieces but the roster is thin everywhere else."
   },
   "Broth22": {
     nickname: "Brothers",
-    context: "Back to back champion. Ends up as catcher and DH on the softball team not because he's a great hitter, just where he ends up. Clueless sometimes but keeps winning. Doesn't trade much. Whipped but nobody holds it against him."
+    context: "Back to back champion. Ends up as catcher and DH on the softball team not because he is a great hitter, just where he lands. Clueless sometimes but keeps winning. Does not trade much. Whipped but nobody holds it against him."
   },
   "shazman123": {
     nickname: "Shaz",
-    context: "Pakistani, lives in Milwaukee. Packers fan. Has Bijan, Ja'Marr Chase, Drake London, Brian Thomas. One of the
+    context: "Pakistani, lives in Milwaukee. Packers fan. Has Bijan Robinson, Ja'Marr Chase, Drake London, Brian Thomas. One of the best rosters in the league. The group makes light jokes about him being a security threat — one subtle reference is fine if it fits naturally."
+  },
+  "ctracewell": {
+    nickname: "Tracewell",
+    context: "Browns and OSU fan. Does DJ sets on the side — the group teases him about it but not mean spirited. Recently moved to NYC. Whipped by his girlfriend Cate. Can be clueless. Openly tanking for the number one pick. Jayden Daniels is his only real asset. The rest of the roster is old and done."
+  },
+  "GrimaceHugeSack": {
+    nickname: "Grimace",
+    context: "Packers and Michigan fan. Just moved to Milwaukee for a new job. Gibbs and Jeanty at RB is genuinely dangerous. AJ Brown is a real WR1. Malik Willis at QB on the Dolphins is the giant problem — unproven on a bad team. Do not hype Jayden Reed — he has never been a top 20 WR."
+  },
+  "Bdug14": {
+    nickname: "Dlugos",
+    context: "Browns and OSU fan. Always talking about going to the gym and getting big. League villain. 13-1 last year but lost in semis. His brother helps run the team — league inside joke. Just got Saquon Barkley. Reference Russia once. End with something punchy like Russia doesn't rebuild, Russia reloads."
+  },
+  "SamHuman12": {
+    nickname: "Sam",
+    context: "Bears fan who roots for every Clemson player in the NFL but is pessimistic about Clemson every single year. Clubnik just entered the league — Sam may now have to root for the Jets. Active trader with a lot of picks. Burrow, Rashee Rice, McMillan are his core. Do not make up personality traits — stick to what is written here."
+  },
+  "Gillilig": {
+    nickname: "Gill",
+    context: "Bears fan in Chicago, gets called a bandwagon — roots for Duke, OSU, and the Bears. Obsessed with Caleb Williams. Has Mahomes, Bo Nix, and Baker Mayfield — genuinely rotates based on matchups, all three are viable starters. Just got CMC whose injury history cannot be ignored. Into sports cards and Rocket League."
+  }
+};
 
 export async function generateTeamBlurbs(rankings: any[], isOffseason: boolean, week: number, rosterInjuries: any = {}, rosterPlayers: any = {}) {
   const teamSummaries = rankings.map((team, index) => {
@@ -55,7 +77,7 @@ export async function generateTeamBlurbs(rankings: any[], isOffseason: boolean, 
     const rosterNote = players.length > 0
       ? `Key players: ${players.slice(0, 8).join(", ")}`
       : "Roster unknown";
-    const lastYearFinish = LAST_YEAR_FINISH[team.username] || "unknown";
+    const lastYearFinish = (LAST_YEAR_FINISH as any)[team.username] || "unknown";
 
     return `#${index + 1} ${team.teamName} (${nickname})
 Record: ${team.wins}-${team.losses} | Points: ${team.points.toFixed(1)}
@@ -84,22 +106,22 @@ STYLE EXAMPLES — write in this voice:
 
 ${styleExamples}
 
-Dry, sharp, and confident — like someone who knows these guys well and isn't trying too hard to be funny. Think Shane Gillis doing fantasy football analysis. One well-placed joke per blurb, not three forced ones. Ground everything in real football first, personality second.
+Write a preseason scouting report for each team in this voice. Dry, sharp, and confident — like someone who knows these guys well and is not trying too hard to be funny. Think Shane Gillis doing fantasy football analysis. One well-placed joke or observation per blurb, not three forced ones. Ground everything in real football first, personality second.
 
 Tone guidelines by ranking position:
-- #1-3: These are the clear favorites. Write them as legitimate threats, dangerous, championship caliber.
-- #4-5: Solid contenders but with real questions. Acknowledge their strengths but point out the one thing that could derail them.
-- #6-8: Middle of the pack. Uncertain. Could go either way. Don't hype them up too much.
-- #9-10: On the outside looking in. Real concerns. Need things to break right.
-- #11-12: Rebuilding or tanking. Be honest about it, make it funny.
+- #1-3: Clear favorites. Dangerous, championship caliber.
+- #4-5: Solid contenders with one real question mark.
+- #6-8: Middle of the pack. Uncertain. Do not hype them.
+- #9-10: Outside looking in. Real concerns.
+- #11-12: Rebuilding or tanking. Be honest, make it pointed.
 
-Only reference country nicknames directly for: Cregg (Germany), Dlugos (Russia), Sherlock (France), Commish (NATO). Everyone else — use their context as background flavor only.
+Only reference country nicknames for: Cregg (Germany), Dlugos (Russia), Sherlock (France), Commish (NATO). Everyone else — use context as background flavor only.
 
 Rules:
 - Use nickname only, never team name
-- Mix real football analysis with personality naturally
+- Real football analysis first, personality second
 - Reference actual players from their roster
-- Be honest — if a team has real weaknesses say so
+- Be honest about weaknesses
 - 4-5 sentences, 75-100 words per blurb
 - No generic clichés
 - Return ONLY a valid JSON array of strings in the same order. No markdown, no extra text.
@@ -110,13 +132,13 @@ ${teamSummaries}`
 
 ${styleExamples}
 
-Write a weekly blurb for each team. Reference their record, recent performance, injuries, and playoff picture. Tone gets more dire as you go down the rankings.
+Write a weekly blurb for each team. Reference their record, recent performance, injuries, and playoff picture. Dry, sharp tone. Gets more dire as you go down the rankings.
 
 Only reference country nicknames for: Cregg (Germany), Dlugos (Russia), Sherlock (France), Commish (NATO).
 
 Rules:
 - Use nickname only
-- Mix football analysis with personality
+- Football analysis first, personality second
 - 4-5 sentences, 75-100 words
 - Fresh every week
 - Return ONLY a valid JSON array in order. No markdown, no extra text.
@@ -128,7 +150,7 @@ ${teamSummaries}`;
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-api-key": process.env.ANTHROPIC_API_KEY,
+      "x-api-key": process.env.ANTHROPIC_API_KEY!,
       "anthropic-version": "2023-06-01"
     },
     body: JSON.stringify({

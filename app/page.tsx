@@ -321,14 +321,14 @@ export default async function Home() {
         {/* Power Rankings */}
         <section>
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-1 h-5 bg-emerald-500 rounded-full" />
-              <h2 className="text-base font-semibold tracking-tight">Power Rankings</h2>
-            </div>
-            <span className="text-[10px] text-white/20 tracking-widest uppercase">
-              {IS_OFFSEASON ? "Preseason" : `Week ${CURRENT_WEEK}`}
-            </span>
-          </div>
+          <div className="mb-6">
+  <h2 className="text-2xl font-bold tracking-tight text-white">
+    {IS_OFFSEASON ? "Preseason Power Rankings" : `Week ${CURRENT_WEEK} Power Rankings`}
+  </h2>
+  <p className="text-white/30 text-sm mt-1">
+    {IS_OFFSEASON ? "2026-27 Season Preview" : `Updated after week ${CURRENT_WEEK} results`}
+  </p>
+</div>
           <div className="rounded-2xl border border-white/[0.06] overflow-hidden">
             {rankings.map((team: any, index: number) => (
               <div
@@ -337,9 +337,9 @@ export default async function Home() {
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <span className="text-lg w-6 text-center">
-                      {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : <span className="text-white/40 text-sm font-bold">#{index + 1}</span>}
-                    </span>
+                  <span className="text-lg w-6 text-center">
+  {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : <span className="text-white text-sm font-bold">#{index + 1}</span>}
+</span>
                     {team.avatar ? (
                       <img
                         src={`https://sleepercdn.com/avatars/thumbs/${team.avatar}`}

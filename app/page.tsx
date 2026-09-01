@@ -10,7 +10,7 @@ const supabase = createClient(
 );
 
 const LEAGUE_ID = "1330820695583625216";
-const CURRENT_WEEK = 1; // deploy trigger
+const CURRENT_WEEK = 1;
 const IS_OFFSEASON = true;
 
 const MANAGER_NICKNAMES: Record<string, string> = {
@@ -318,17 +318,15 @@ export default async function Home() {
 
       <main className="max-w-4xl mx-auto px-4 py-8 flex flex-col gap-12">
 
-        {/* Power Rankings */}
         <section>
-          <div className="flex items-center justify-between mb-4">
           <div className="mb-6">
-          <h2 className="text-3xl font-bold tracking-tight text-white">
-    {IS_OFFSEASON ? "Preseason Power Rankings" : `Week ${CURRENT_WEEK} Power Rankings`}
-  </h2>
-  <p className="text-white/30 text-sm mt-1">
-    {IS_OFFSEASON ? "2026-27 Season Preview" : `Updated after week ${CURRENT_WEEK} results`}
-  </p>
-</div>
+            <h2 className="text-3xl font-bold tracking-tight text-white">
+              {IS_OFFSEASON ? "Preseason Power Rankings" : `Week ${CURRENT_WEEK} Power Rankings`}
+            </h2>
+            <p className="text-white/30 text-sm mt-1">
+              {IS_OFFSEASON ? "2026-27 Season Preview" : `Updated after week ${CURRENT_WEEK} results`}
+            </p>
+          </div>
           <div className="rounded-2xl border border-white/[0.06] overflow-hidden">
             {rankings.map((team: any, index: number) => (
               <div
@@ -337,17 +335,17 @@ export default async function Home() {
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
-                  <span className="text-lg w-6 text-center">
-  {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : <span className="text-white text-sm font-bold">#{index + 1}</span>}
-</span>
+                    <span className="text-xl w-8 text-center font-bold">
+                      {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : <span className="text-white text-base font-bold">#{index + 1}</span>}
+                    </span>
                     {team.avatar ? (
                       <img
                         src={`https://sleepercdn.com/avatars/thumbs/${team.avatar}`}
                         alt={team.username}
-                        className="w-9 h-9 rounded-full object-cover ring-1 ring-white/20"
+                        className="w-10 h-10 rounded-full object-cover ring-1 ring-white/20"
                       />
                     ) : (
-                      <div className="w-9 h-9 rounded-full bg-white/10" />
+                      <div className="w-10 h-10 rounded-full bg-white/10" />
                     )}
                     <div>
                       <p className="text-base font-semibold text-white leading-tight">{team.teamName}</p>
@@ -379,16 +377,11 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Matchup Recaps */}
         <section>
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-1 h-5 bg-emerald-500 rounded-full" />
-              <h2 className="text-base font-semibold tracking-tight">Matchup Recaps</h2>
-            </div>
-            <span className="text-[10px] text-white/20 tracking-widest uppercase">
-              {IS_OFFSEASON ? "Preseason" : `Week ${CURRENT_WEEK}`}
-            </span>
+          <div className="mb-4">
+            <h2 className="text-2xl font-bold tracking-tight text-white">
+              {IS_OFFSEASON ? "Matchups" : `Week ${CURRENT_WEEK} Matchups`}
+            </h2>
           </div>
           {IS_OFFSEASON ? (
             <div className="rounded-2xl border border-white/[0.06] px-5 py-8 text-center">
@@ -429,16 +422,9 @@ export default async function Home() {
           )}
         </section>
 
-        {/* Risers & Fallers */}
         <section>
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-1 h-5 bg-emerald-500 rounded-full" />
-              <h2 className="text-base font-semibold tracking-tight">Risers & Fallers</h2>
-            </div>
-            <span className="text-[10px] text-white/20 tracking-widest uppercase">
-              {IS_OFFSEASON ? "Preseason" : `Week ${CURRENT_WEEK}`}
-            </span>
+          <div className="mb-4">
+            <h2 className="text-2xl font-bold tracking-tight text-white">Risers & Fallers</h2>
           </div>
           {IS_OFFSEASON || Object.keys(lastWeekRanks).length === 0 ? (
             <div className="rounded-2xl border border-white/[0.06] px-5 py-8 text-center">
@@ -483,16 +469,9 @@ export default async function Home() {
           )}
         </section>
 
-        {/* Hot & Cold */}
         <section>
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-1 h-5 bg-emerald-500 rounded-full" />
-              <h2 className="text-base font-semibold tracking-tight">Hot & Cold</h2>
-            </div>
-            <span className="text-[10px] text-white/20 tracking-widest uppercase">
-              {IS_OFFSEASON ? "Preseason" : `Week ${CURRENT_WEEK}`}
-            </span>
+          <div className="mb-4">
+            <h2 className="text-2xl font-bold tracking-tight text-white">Hot & Cold</h2>
           </div>
           {IS_OFFSEASON || CURRENT_WEEK < 3 ? (
             <div className="rounded-2xl border border-white/[0.06] px-5 py-8 text-center">

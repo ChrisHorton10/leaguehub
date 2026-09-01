@@ -36,7 +36,7 @@ const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = 
   },
   "Broth22": {
     nickname: "Brothers",
-    context: "Back to back champion. Ends up as catcher and DH on the softball team not because he is a great hitter, just where he lands. Clueless sometimes but keeps winning. Does not trade much. Whipped but nobody holds it against him."
+    context: "Back to back champion. Ends up as catcher and DH on the softball team not because he is a great hitter, just where he lands. Clueless sometimes but keeps winning. Does not trade much. Whipped by his gf Gabby."
   },
   "shazman123": {
     nickname: "Shaz",
@@ -60,8 +60,8 @@ const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = 
   },
   "Gillilig": {
     nickname: "Gill",
-    context: "Bears fan in Chicago, gets called a bandwagon — roots for Duke, OSU, and the Bears. Obsessed with Caleb Williams. Has Mahomes, Bo Nix, and Baker Mayfield — genuinely rotates based on matchups, all three are viable starters. Just got CMC whose injury history cannot be ignored. Into sports cards and Rocket League."
-  }
+    context: "Bears fan in Chicago, gets called a bandwagon — roots for Duke, OSU, and the Bears. Obsessed with Caleb Williams. Has Mahomes, Bo Nix, and Baker Mayfield — genuinely rotates based on matchups, all three are viable starters. Just got CMC whose injury history cannot be ignored. Into sports cards and Rocket League. Do not reference the round any player was drafted in our rookie draft — you do not know the order."
+  },
 };
 
 export async function generateTeamBlurbs(rankings: any[], isOffseason: boolean, week: number, rosterInjuries: any = {}, rosterPlayers: any = {}) {

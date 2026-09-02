@@ -50,9 +50,9 @@ const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = 
     nickname: "Grimace",
     context: "Packers and Michigan fan. Just moved to Milwaukee for a new job. Gibbs and Jeanty at RB is genuinely dangerous. AJ Brown is a real WR1. Malik Willis at QB on the Dolphins is the giant problem — unproven on a bad team. Do not hype Jayden Reed — he has never been a top 20 WR."
   },
-  "Bdug14": {
+"Bdug14": {
     nickname: "Dlugos",
-    context: "Browns and OSU fan. Always talking about going to the gym and getting big. League villain. 13-1 last year but lost in semis. His brother helps run the team — league inside joke. Just got Saquon Barkley. Reference Russia once naturally. End with something punchy like Russia doesn't rebuild, Russia reloads."
+    context: "Browns and OSU fan. Constantly talks about going to the gym and getting big — use this to tease him not compliment him. One of the League villains. 13-1 last year but lost in semis. His brother helps run the team — league inside joke. Just got Saquon Barkley. Reference Russia once. End with something punchy like Russia doesn't rebuild, Russia reloads."
   },
   "SamHuman12": {
     nickname: "Sam",
@@ -105,7 +105,7 @@ STYLE EXAMPLES — write in this voice:
 
 ${styleExamples}
 
-Write a preseason scouting report for each team in this voice. Dry, sharp, and confident — like someone who knows these guys well and is not trying too hard to be funny. Think Shane Gillis doing fantasy football analysis. One well-placed joke or observation per blurb, not three forced ones. Ground everything in real football first, personality second.
+Write sharp, honest fantasy analysis with dry wit. The humor should come from specific, true observations — not setup/punchline jokes. Think of it like a beat writer who knows everyone in the league personally and isn't afraid to say what everyone is thinking. Funny because it's accurate, not because it's trying to be funny. One good dry observation per blurb that fits naturally — if it doesn't fit, skip it and just write good analysis.
 
 Tone guidelines by ranking position:
 - #1-3: Clear favorites. Dangerous, championship caliber.

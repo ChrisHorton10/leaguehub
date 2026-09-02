@@ -12,55 +12,54 @@ export const LAST_YEAR_FINISH: Record<string, number> = {
   "SamHuman12": 11,
   "Sher2Lose": 12
 };
-
 const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = {
   "chrishorton10": {
     nickname: "Commish",
-    context: "Commissioner. Cowboys die-hard with delusional annual confidence — mirrors how he approaches his fantasy team. Loves to gamble. The kind of guy who is always confident heading into the season regardless of how last year went."
+    context: "Commissioner. Cowboys die-hard with delusional annual confidence. Loves to gamble. Lead with the actual roster analysis first — Cowboys blind faith as the closer, not the opener."
   },
   "BCregg": {
     nickname: "Cregg",
-    context: "Giants fan, Syracuse fan, Buffalo Sabres fan, Yankees fan. Gets into arguments when drunk. Big hockey and video game guy. Known as Germany in the league — reference once. Got pushed out as manager of the league softball team lineup a few games in. Loves to gamble. His two main RBs are Kenneth Walker who was a Super Bowl MVP coming back from injury and Chase Brown who is a dawg. Pollard is also on the roster but is a depth piece."
+    context: "Giants fan, Syracuse fan, Buffalo Sabres fan, Yankees fan. Gets into arguments when drunk. Big hockey and video game guy. Known as Germany — reference once only. Got pushed out as manager of the league softball team lineup a few games in. Loves to gamble."
   },
   "ScubaSteve0709": {
     nickname: "Scuba Steve",
-    context: "Bengals and Saints fan. Purdue Boilermakers fan. Newly engaged. Lives in Cincinnati away from everyone else in the group. Laid back personality."
+    context: "Bengals and Saints fan. Purdue Boilermakers fan. Newly engaged. Has always lived in Cincinnati — do not frame it as something new. His biggest weakness is the RB room — past Achane there is basically nothing and that is the real concern for this team. Do not mention JJ McCarthy."
   },
   "kmyers": {
     nickname: "Kyle",
-    context: "Browns and Nebraska fan — two historically painful fanbases. Hungarian and makes sure people know it. Drives a Tesla — if there is a natural self-driving or Elon joke it can work but do not force it. Has been a trade pinata in the league historically. Lovable guy. In golf he launches the ball but it rarely goes straight and really struggles with the wedge."
+    context: "Browns and Nebraska fan — two historically painful fanbases. Hungarian and makes sure people know it. Drives a Tesla — natural Elon or self-driving joke works but do not force it. Has been a trade pinata historically. Lovable guy. In golf he launches the ball but it rarely goes straight and really struggles with the wedge."
   },
   "Sher2Lose": {
     nickname: "Sherlock",
-    context: "Bengals fan. Short. Always late to everything — do not use being late as a fantasy metaphor. Has real money on Bengals player outcomes. Known as France in the league — reference once. Actively and intentionally tanking for the number one pick — this is a deliberate strategy not giving up."
+    context: "Bengals fan. Short. Always late to everything — do not use being late as a fantasy metaphor. Has real money on Bengals player outcomes. Known as France — reference once only. Actively and intentionally tanking for the number one pick — deliberate strategy not a collapse."
   },
   "Broth22": {
     nickname: "Brothers",
-    context: "Back to back league champion. Ends up as catcher and DH on the softball team not because he is a great hitter, just where he lands. Clueless sometimes but keeps winning. Does not trade much. Whipped by his girlfriend Gabby but nobody holds it against him."
+    context: "Back to back league champion. Clueless sometimes but keeps winning. Does not trade much. Whipped by his girlfriend Gabby but nobody holds it against him."
   },
   "shazman123": {
     nickname: "Shaz",
-    context: "Pakistani, lives in Milwaukee. Packers fan. One of the few minority friends in the group. The group jokes his roster is a security threat — something like the TSA already has eyes on this works well. Keep it light and subtle."
+    context: "Pakistani, lives in Milwaukee. Packers fan. One of the few minority friends in the group. The group jokes his roster is a security threat — TSA reference works well. Keep it light and subtle."
   },
   "ctracewell": {
     nickname: "Tracewell",
-    context: "Browns and OSU fan. Does DJ sets on the side — gentle ribbing only, not mean. Moved to NYC a while back. Whipped by his girlfriend Cate who knows nothing about fantasy football — and honestly neither does Tracewell half the time, that is the joke. Openly and intentionally tanking for the number one pick."
+    context: "Browns and OSU fan. Does DJ sets on the side — gentle ribbing only, not mean. Moved to NYC a while back. Actively tanking for the number one pick. Jayden Daniels is his only real asset. Do not mention Cate or his girlfriend at all."
   },
   "GrimaceHugeSack": {
     nickname: "Grimace",
-    context: "Packers and Michigan fan. Just moved to Milwaukee for a new job. Low drama, builds quietly."
+    context: "Packers and Michigan fan. Just moved to Milwaukee for a new job. Low drama, builds quietly. Malik Willis at QB on the Dolphins is a giant problem — unproven on a bad team. Do not hype Jayden Reed or Xavier Worthy as difference makers."
   },
   "Bdug14": {
     nickname: "Dlugos",
-    context: "Browns and OSU fan. Constantly talks about going to the gym and getting big — tease him for this, do not compliment him on it. League villain energy. 13-1 last year but lost in semis. His brother helps run the team — running inside joke with the league. Known as Russia — reference once. Close with Russia doesn't rebuild, Russia reloads."
+    context: "Browns and OSU fan. Constantly talks about going to the gym and getting big — tease him for this, do not compliment him. League villain. 13-1 last year but lost in semis. His brother helps run the team — league inside joke. Recently acquired Saquon Barkley — this must be mentioned as a significant addition regardless of what the key players list shows. Known as Russia — reference once. Close with Russia doesn't rebuild, Russia reloads."
   },
   "SamHuman12": {
     nickname: "Sam",
-    context: "Bears fan who roots for every Clemson player in the NFL. Pessimistic by nature — especially about Clemson every year, he loves them but always expects disappointment and they usually deliver it. Clemson used to be a CFB dynasty, not anymore. Cade Klubnik just entered the NFL on the Jets which means Sam now has a Clemson guy to root for there. Active trader who tends to win his trades."
+    context: "Bears fan who roots for every Clemson player in the NFL. Pessimistic by nature — especially about Clemson every year, loves them but always expects disappointment and they usually deliver it. Clemson used to be a CFB dynasty, not anymore. Cade Klubnik just entered the NFL on the Jets — Sam now has a Clemson guy to quietly stress about there too. Active trader who tends to win his trades."
   },
   "Gillilig": {
     nickname: "Gill",
-    context: "Bears fan in Chicago but gets called a bandwagon — roots for Duke, OSU, and the Bears. Obsessed with Caleb Williams succeeding — big into sports cards and probably hunting for a Caleb Williams one of one. Big into Rocket League. Gets teased for being a bandwagon fan. In golf he can put a great nine together but the other nine is always a disaster — big struggles with the driver."
+    context: "Bears fan in Chicago but gets called a bandwagon — roots for Duke, OSU, and the Bears. Obsessed with Caleb Williams succeeding. Big into Rocket League and hunting for a Caleb Williams sports card one of one. Has three legitimate starting QBs — do not question the QB situation, it is a strength. The front nine looks great, the back nine is where this team tends to fall apart — use this golf reference if it fits naturally."
   }
 };
 export async function generateTeamBlurbs(rankings: any[], isOffseason: boolean, week: number, rosterInjuries: any = {}, rosterPlayers: any = {}) {

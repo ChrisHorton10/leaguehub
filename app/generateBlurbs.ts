@@ -20,7 +20,7 @@ const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = 
   },
   "BCregg": {
     nickname: "Cregg",
-    context: "Giants fan, Syracuse fan, Buffalo Sabres fan, Yankees fan. Gets into arguments when drunk. Big hockey and video game guy. Known as Germany in the league — reference once. Got pushed out as manager of the league softball team lineup a few games in. Loves to gamble."
+    context: "Giants fan, Syracuse fan, Buffalo Sabres fan, Yankees fan. Gets into arguments when drunk. Big hockey and video game guy. Known as Germany in the league — reference once. Got pushed out as manager of the league softball team lineup a few games in. Loves to gamble. His two main RBs are Kenneth Walker who was a Super Bowl MVP coming back from injury and Chase Brown who is a dawg. Pollard is also on the roster but is a depth piece."
   },
   "ScubaSteve0709": {
     nickname: "Scuba Steve",
@@ -28,11 +28,11 @@ const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = 
   },
   "kmyers": {
     nickname: "Kyle",
-    context: "Browns and Nebraska fan — two historically painful fanbases. Hungarian and makes sure people know it. Drives a Tesla. Sells sports cards on eBay. Big into Rocket League. Has been a trade pinata in the league historically. Lovable guy."
+    context: "Browns and Nebraska fan — two historically painful fanbases. Hungarian and makes sure people know it. Drives a Tesla — if there is a natural self-driving or Elon joke it can work but do not force it. Has been a trade pinata in the league historically. Lovable guy. In golf he launches the ball but it rarely goes straight and really struggles with the wedge."
   },
   "Sher2Lose": {
     nickname: "Sherlock",
-    context: "Bengals fan. Short. Always late to everything — but do not use being late as a fantasy metaphor. Has real money on Bengals player outcomes. Known as France in the league — reference once. Openly tanking for the number one pick."
+    context: "Bengals fan. Short. Always late to everything — do not use being late as a fantasy metaphor. Has real money on Bengals player outcomes. Known as France in the league — reference once. Actively and intentionally tanking for the number one pick — this is a deliberate strategy not giving up."
   },
   "Broth22": {
     nickname: "Brothers",
@@ -44,7 +44,7 @@ const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = 
   },
   "ctracewell": {
     nickname: "Tracewell",
-    context: "Browns and OSU fan. Does DJ sets on the side — gentle ribbing only, not mean. Moved to NYC a while back. Whipped by his girlfriend Cate who knows nothing about fantasy football — and honestly neither does Tracewell half the time, that is the joke. Openly tanking for the number one pick."
+    context: "Browns and OSU fan. Does DJ sets on the side — gentle ribbing only, not mean. Moved to NYC a while back. Whipped by his girlfriend Cate who knows nothing about fantasy football — and honestly neither does Tracewell half the time, that is the joke. Openly and intentionally tanking for the number one pick."
   },
   "GrimaceHugeSack": {
     nickname: "Grimace",
@@ -60,7 +60,7 @@ const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = 
   },
   "Gillilig": {
     nickname: "Gill",
-    context: "Bears fan in Chicago but gets called a bandwagon — roots for Duke, OSU, and the Bears. Obsessed with Caleb Williams succeeding. Big into sports cards and Rocket League. Gets teased for being a bandwagon fan."
+    context: "Bears fan in Chicago but gets called a bandwagon — roots for Duke, OSU, and the Bears. Obsessed with Caleb Williams succeeding — big into sports cards and probably hunting for a Caleb Williams one of one. Big into Rocket League. Gets teased for being a bandwagon fan. In golf he can put a great nine together but the other nine is always a disaster — big struggles with the driver."
   }
 };
 export async function generateTeamBlurbs(rankings: any[], isOffseason: boolean, week: number, rosterInjuries: any = {}, rosterPlayers: any = {}) {
@@ -130,6 +130,7 @@ Rules:
 - The flex position can be filled by WR, RB, or TE — do not assume a team can only start one TE
 - Use your knowledge of 2026 NFL training camps, rookie standouts, and player developments when relevant
 - Trust the key players list — these are the highest projected players on each roster regardless of position
+- Teams ranked #1-6 technically make the playoffs in this league. Write the top 3 as genuine championship threats, #4-6 as teams that will make the playoffs but have real questions, #7-9 as on the bubble, #10-12 as rebuilding or out of contention.
 
 Teams:
 ${teamSummaries}`

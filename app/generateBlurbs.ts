@@ -16,51 +16,51 @@ export const LAST_YEAR_FINISH: Record<string, number> = {
 const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = {
   "chrishorton10": {
     nickname: "Commish",
-    context: "Commissioner. Cowboys fan with delusional annual confidence. WR room is his strength — Waddle in Denver, Olave, MHJ trying to bounce back. RB room is the real question — Bucky Irving, Breece Hall injury history, Quinshon Judkins on the bad Browns team. Lean into Cowboys fan blind faith angle."
+    context: "Commissioner. Cowboys die-hard with delusional annual confidence — mirrors how he approaches his fantasy team. Loves to gamble. The kind of guy who is always confident heading into the season regardless of how last year went."
   },
   "BCregg": {
     nickname: "Cregg",
-    context: "Giants fan, big hockey guy, gets into arguments when drunk. Known as Germany — reference once. Got pushed out as manager of the league softball team lineup a few games in — a line like hopefully he manages this roster better than the softball lineup is fine but do not dwell on it. Has Josh Allen at QB which is elite — do not question or undermine Josh Allen, he is the best QB in fantasy. Kenneth Walker was Super Bowl MVP and coming back, Chase Brown is his real RB1 and is a dawg. Do not mention JJ McCarthy. Do not compare point projections."
+    context: "Giants fan, Syracuse fan, Buffalo Sabres fan, Yankees fan. Gets into arguments when drunk. Big hockey and video game guy. Known as Germany in the league — reference once. Got pushed out as manager of the league softball team lineup a few games in. Loves to gamble."
   },
   "ScubaSteve0709": {
     nickname: "Scuba Steve",
-    context: "Bengals and Saints fan. Purdue Boilermakers fan. Newly engaged. Lives in Cincinnati away from everyone. Has Jalen Hurts and CeeDee Lamb as his core plus Justin Jefferson. Devon Achane is a top 8 RB and a real weapon. Do not mention JJ McCarthy at all under any circumstances — Hurts is the QB, Hurts is starting. Make the opening line interesting."
+    context: "Bengals and Saints fan. Purdue Boilermakers fan. Newly engaged. Lives in Cincinnati away from everyone else in the group. Laid back personality."
   },
   "kmyers": {
     nickname: "Kyle",
-    context: "Browns and Nebraska fan. Hungarian and mentions it. Drives a Tesla. Sells sports cards on eBay. Has Lamar Jackson who is elite, Kyle Pitts who bounced back in 2025, just got Zay Flowers. Running back room is genuinely brutal — thin on both talent and depth. Has been a trade pinata historically. Lead with the football not the personal facts."
+    context: "Browns and Nebraska fan — two historically painful fanbases. Hungarian and makes sure people know it. Drives a Tesla. Sells sports cards on eBay. Big into Rocket League. Has been a trade pinata in the league historically. Lovable guy."
   },
   "Sher2Lose": {
     nickname: "Sherlock",
-    context: "Bengals fan. Short. Always late to everything. Openly tanking for the number one pick. Has real money on Bengals players and outcomes. Known as France — reference once. CJ Stroud and Pickens are real pieces but the roster is thin everywhere else."
+    context: "Bengals fan. Short. Always late to everything — but do not use being late as a fantasy metaphor. Has real money on Bengals player outcomes. Known as France in the league — reference once. Openly tanking for the number one pick."
   },
   "Broth22": {
     nickname: "Brothers",
-    context: "Back to back champion. Ends up as catcher and DH on the softball team not because he is a great hitter, just where he lands. Clueless sometimes but keeps winning. Does not trade much. Whipped by his girlfriend Gabby but nobody holds it against him."
+    context: "Back to back league champion. Ends up as catcher and DH on the softball team not because he is a great hitter, just where he lands. Clueless sometimes but keeps winning. Does not trade much. Whipped by his girlfriend Gabby but nobody holds it against him."
   },
   "shazman123": {
     nickname: "Shaz",
-    context: "Pakistani, lives in Milwaukee. Packers fan. Has Bijan Robinson, Ja'Marr Chase, Drake London, Brian Thomas. One of the best rosters in the league. The group makes light jokes about him being a security threat — one very subtle reference is fine if it fits naturally, otherwise skip it."
+    context: "Pakistani, lives in Milwaukee. Packers fan. One of the few minority friends in the group. The group jokes his roster is a security threat — something like the TSA already has eyes on this works well. Keep it light and subtle."
   },
   "ctracewell": {
     nickname: "Tracewell",
-    context: "Browns and OSU fan. Does DJ sets on the side — the group teases him about it but not mean spirited, gentle ribbing only. Moved to NYC a while back. Whipped by his girlfriend Cate. Can be clueless sometimes. Openly tanking for the number one pick and not hiding it. Jayden Daniels is his only real asset. The rest of the roster is old and done."
+    context: "Browns and OSU fan. Does DJ sets on the side — gentle ribbing only, not mean. Moved to NYC a while back. Whipped by his girlfriend Cate who knows nothing about fantasy football — and honestly neither does Tracewell half the time, that is the joke. Openly tanking for the number one pick."
   },
   "GrimaceHugeSack": {
     nickname: "Grimace",
-    context: "Packers and Michigan fan. Just moved to Milwaukee for a new job. Gibbs and Jeanty at RB is genuinely dangerous. AJ Brown is a real WR1. Malik Willis at QB on the Dolphins is the giant problem — unproven on a bad team. Do not hype Jayden Reed — he has never been a top 20 WR."
+    context: "Packers and Michigan fan. Just moved to Milwaukee for a new job. Low drama, builds quietly."
   },
-"Bdug14": {
+  "Bdug14": {
     nickname: "Dlugos",
-    context: "Browns and OSU fan. Constantly talks about going to the gym and getting big — use this to tease him not compliment him. One of the League villains. 13-1 last year but lost in semis. His brother helps run the team — league inside joke. Just got Saquon Barkley. Reference Russia once. End with something punchy like Russia doesn't rebuild, Russia reloads."
+    context: "Browns and OSU fan. Constantly talks about going to the gym and getting big — tease him for this, do not compliment him on it. League villain energy. 13-1 last year but lost in semis. His brother helps run the team — running inside joke with the league. Known as Russia — reference once. Close with Russia doesn't rebuild, Russia reloads."
   },
   "SamHuman12": {
     nickname: "Sam",
-    context: "Bears fan who roots for every Clemson player in the NFL. Always pessimistic about Clemson going into the year even though he loves them — they used to be a CFB dynasty and are not anymore. Cade Klubnik is now in the NFL on the Jets which is funny since Sam now has a Clemson guy there. Active trader who tends to win his trades — expect him to make moves during the season. Burrow, Rashee Rice, McMillan are his core. Do not invent personality traits not written here."
+    context: "Bears fan who roots for every Clemson player in the NFL. Pessimistic by nature — especially about Clemson every year, he loves them but always expects disappointment and they usually deliver it. Clemson used to be a CFB dynasty, not anymore. Cade Klubnik just entered the NFL on the Jets which means Sam now has a Clemson guy to root for there. Active trader who tends to win his trades."
   },
   "Gillilig": {
     nickname: "Gill",
-    context: "Bears fan in Chicago, gets called a bandwagon — roots for Duke, OSU, and the Bears. Obsessed with Caleb Williams. Has Mahomes, Bo Nix, and Baker Mayfield — genuinely rotates based on matchups, all three are viable starters. Just got CMC whose injury history cannot be ignored. Into sports cards and Rocket League. Do not reference the round any player was drafted in the rookie draft."
+    context: "Bears fan in Chicago but gets called a bandwagon — roots for Duke, OSU, and the Bears. Obsessed with Caleb Williams succeeding. Big into sports cards and Rocket League. Gets teased for being a bandwagon fan."
   }
 };
 export async function generateTeamBlurbs(rankings: any[], isOffseason: boolean, week: number, rosterInjuries: any = {}, rosterPlayers: any = {}) {

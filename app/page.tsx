@@ -162,7 +162,9 @@ export default async function Home() {
       const points = (roster.settings.fpts || 0) + ((roster.settings.fpts_decimal || 0) / 100);
       const rosterScore = rosterScores[username] || 0;
       const claudeScore = claudeScores[username] || 5;
-      const finalScore = (rosterScore * 0.7) + (claudeScore * 10 * 0.3);
+      const finalScore = IS_OFFSEASON
+  ? (rosterScore * 0.7) + (claudeScore * 10 * 0.3)
+  : (rosterScore * 0.3) + (claudeScore * 10 * 0.2) + (points * 0.3) + (wins * 15 * 0.2);
 
       return {
         teamName: user?.name || "Unknown",

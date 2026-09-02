@@ -127,6 +127,9 @@ Rules:
 - Be honest about weaknesses — if the RB room is bad, say it
 - 4-5 sentences, 75-100 words per blurb
 - Return ONLY a valid JSON array of strings in the same order. No markdown, no extra text.
+- The flex position can be filled by WR, RB, or TE — do not assume a team can only start one TE
+- Use your knowledge of 2026 NFL training camps, rookie standouts, and player developments when relevant
+- Trust the key players list — these are the highest projected players on each roster regardless of position
 
 Teams:
 ${teamSummaries}`
@@ -149,6 +152,9 @@ Rules:
 - Be honest about weaknesses — if the RB room is bad, say it
 - 4-5 sentences, 75-100 words per blurb
 - Return ONLY a valid JSON array of strings in the same order. No markdown, no extra text.
+- The flex position can be filled by WR, RB, or TE — do not assume a team can only start one TE
+- Use your knowledge of 2026 NFL training camps, rookie standouts, and player developments when relevant
+- Trust the key players list — these are the highest projected players on each roster regardless of position
 Teams:
 ${teamSummaries}`;
 

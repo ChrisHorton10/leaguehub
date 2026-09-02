@@ -118,20 +118,18 @@ Only reference country nicknames for: Cregg (Germany), Dlugos (Russia), Sherlock
 
 Rules:
 - Use nickname only, never team name
-- Lead with roster analysis — who are the real difference makers, what are the genuine concerns
-- Use ONLY the players listed in the key players section for each team — do not invent or assume players
+- CRITICAL: Use ONLY the players listed in the key players section. Do not add, remove, or substitute any players based on your own knowledge. If a player is on the list they are on this roster. If they are not on the list do not mention them.
+- Lead with roster analysis — who are the real difference makers, what are the genuine concerns based on the players listed
 - Reference specific players by name and what they bring to this roster
-- Note any trades or acquisitions as forward-looking context
-- One sharp personality observation or burn per blurb max — the analysis comes first
-- Do not invent personality traits not explicitly stated in the manager context
-- Be honest about weaknesses — if the RB room is bad, say it
+- The flex position can be filled by WR, RB, or TE — do not assume a team can only start one TE
+- Use your knowledge of 2026 NFL training camps, rookie standouts, and player situations when relevant to players actually on the roster
+- One sharp, natural personality observation per blurb — the analysis comes first, personality is the closer
+- Do not invent personality traits or storylines not explicitly stated in the manager context
+- Do not force jokes — if a natural observation lands, use it. If not, just write sharp analysis.
+- Be honest about weaknesses — if the RB room is bad, say it. If the QB situation is a concern, say it.
+- Teams ranked #1-3 are genuine championship threats. #4-6 make the playoffs but have real questions. #7-9 are on the bubble. #10-12 are rebuilding or out of contention. Write each team accordingly.
 - 4-5 sentences, 75-100 words per blurb
 - Return ONLY a valid JSON array of strings in the same order. No markdown, no extra text.
-- The flex position can be filled by WR, RB, or TE — do not assume a team can only start one TE
-- Use your knowledge of 2026 NFL training camps, rookie standouts, and player developments when relevant
-- Trust the key players list — these are the highest projected players on each roster regardless of position
-- Teams ranked #1-6 technically make the playoffs in this league. Write the top 3 as genuine championship threats, #4-6 as teams that will make the playoffs but have real questions, #7-9 as on the bubble, #10-12 as rebuilding or out of contention.
-
 Teams:
 ${teamSummaries}`
     : `You are writing the week ${week} power rankings for the Chiraq Dynasty League.
@@ -144,18 +142,18 @@ Only reference country nicknames for: Cregg (Germany), Dlugos (Russia), Sherlock
 
 Rules:
 - Use nickname only, never team name
-- Lead with roster analysis — who are the real difference makers, what are the genuine concerns
-- Use ONLY the players listed in the key players section for each team — do not invent or assume players
+- CRITICAL: Use ONLY the players listed in the key players section. Do not add, remove, or substitute any players based on your own knowledge. If a player is on the list they are on this roster. If they are not on the list do not mention them.
+- Lead with roster analysis — who are the real difference makers, what are the genuine concerns based on the players listed
 - Reference specific players by name and what they bring to this roster
-- Note any trades or acquisitions as forward-looking context
-- One sharp personality observation or burn per blurb max — the analysis comes first
-- Do not invent personality traits not explicitly stated in the manager context
-- Be honest about weaknesses — if the RB room is bad, say it
+- The flex position can be filled by WR, RB, or TE — do not assume a team can only start one TE
+- Reference their actual record, recent performance, and injury situation based on the data provided
+- One sharp, natural personality observation per blurb — the analysis comes first, personality is the closer
+- Do not invent personality traits or storylines not explicitly stated in the manager context
+- Do not force jokes — if a natural observation lands, use it. If not, just write sharp analysis.
+- Be honest about weaknesses — if the RB room is bad, say it. If the QB situation is a concern, say it.
+- Teams ranked #1-3 are genuine championship threats. #4-6 make the playoffs but have real questions. #7-9 are on the bubble. #10-12 are rebuilding or out of contention. Write each team accordingly.
 - 4-5 sentences, 75-100 words per blurb
 - Return ONLY a valid JSON array of strings in the same order. No markdown, no extra text.
-- The flex position can be filled by WR, RB, or TE — do not assume a team can only start one TE
-- Use your knowledge of 2026 NFL training camps, rookie standouts, and player developments when relevant
-- Trust the key players list — these are the highest projected players on each roster regardless of position
 Teams:
 ${teamSummaries}`;
 

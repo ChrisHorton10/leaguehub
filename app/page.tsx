@@ -124,15 +124,23 @@ export default async function Home() {
 
     rosterScores[user.username] = lineupScore;
 
-    const formatPlayer = (p: any) => {
+    const formatPlayer = (p: any, isStarter: boolean) => {
       const proj = `proj:${p.pts_ppr.toFixed(1)}`;
       const actual = p.actual_pts !== undefined ? ` actual:${p.actual_pts.toFixed(1)}` : '';
       const exceeded = p.actual_pts !== undefined && p.pts_ppr > 0 && p.actual_pts > p.pts_ppr * 1.2 ? ' (OVERPERFORMED)' : '';
       const busted = p.actual_pts !== undefined && p.pts_ppr > 10 && p.actual_pts < p.pts_ppr * 0.5 ? ' (BUSTED)' : '';
-      return `${p.full_name} (${p.position}, ${p.team || 'FA'}) ${proj}${actual}${exceeded}${busted}`;
+      const role = isStarter ? 'STARTER' : 'BENCH';
+      return `[${role}] ${p.full_name} (${p.position}, ${p.team || 'FA'}) ${proj}${actual}${exceeded}${busted}`;
     };
 
-    rosterPlayers[user.username] = allEligibleByProjection.map(formatPlayer);
+    rosterPlayers[user.username] = [
+      ...allEligibleByProjection
+        .filter((p: any) => starterIds.has(p.player_id))
+        .map((p: any) => formatPlayer(p, true)),
+      ...allEligibleByProjection
+        .filter((p: any) => !starterIds.has(p.player_id))
+        .map((p: any) => formatPlayer(p, false))
+    ];
 
     const injured = (roster.players || [])
       .filter((id: string) => !taxiIds.has(id))
@@ -145,8 +153,12 @@ export default async function Home() {
       username: user.username,
       teamName: user.name || user.username,
       nickname: MANAGER_NICKNAMES[user.username] || user.username,
-      starters: startingLineup.map(formatPlayer),
-      bench: benchPlayers.map(formatPlayer),
+starters: allEligibleByProjection
+  .filter((p: any) => starterIds.has(p.player_id))
+  .map((p: any) => formatPlayer(p, true)),
+bench: allEligibleByProjection
+  .filter((p: any) => !starterIds.has(p.player_id))
+  .map((p: any) => formatPlayer(p, false)),
       projectedPts,
       actualPts
     });

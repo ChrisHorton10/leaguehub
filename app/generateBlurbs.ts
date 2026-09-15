@@ -125,8 +125,7 @@ ${teamSummaries}`
 
 ${styleExamples}
 
-Write a weekly blurb for each team. This is the most important rule: USE THE ACTUAL WEEK ${week} SCORES in the player data to write meaningful analysis. Players marked OVERPERFORMED exceeded expectations significantly. Players marked BUSTED missed badly. Call these out. Mention bench players who scored big as potential future difference makers. This should feel like a real weekly recap written by someone who watched the scores come in.
-
+Write a weekly power rankings blurb for each team. These should be forward-looking — where does this team stand and where are they headed? Use week ${week} results as evidence for your assessment, not as the story itself. The story is the team's trajectory. One key week 1 observation that tells us something meaningful about this team's season outlook, not a point-by-point recap.
 Ranking tiers:
 - #1-3: Playing like championship contenders right now
 - #4-6: Playoff teams with questions
@@ -138,9 +137,12 @@ Only use country nicknames if there is a genuinely NEW angle this week — do no
 Rules:
 - Use nickname only, never team name
 - CRITICAL: Only reference players listed in the roster section with their actual team affiliations
+- Players marked [STARTER] actually played this week — focus analysis on them
+- Players marked [BENCH] did not start — only mention if they OVERPERFORMED significantly as a sleeper worth watching
 - Reference actual week ${week} scores — proj means projection, actual means what they scored
-- Call out OVERPERFORMED and BUSTED players specifically
-- Flag bench players who scored big as potential starters or sleepers
+- Call out OVERPERFORMED and BUSTED players specifically by name
+- NEVER reference a backup QB's points as meaningful unless they are marked [STARTER] or clearly competing for the starting job
+- When mentioning a QB make clear if they started or are a depth stash
 - One personality observation per blurb max — football analysis comes first
 - Do not recycle the same personality jokes from previous weeks
 - 4-5 sentences, 75-100 words
@@ -165,11 +167,14 @@ ${teamSummaries}`;
 
   const data = await response.json();
   const text = data.content[0].text;
+  console.log("Claude blurb response:", JSON.stringify(data).slice(0, 500));
 
   try {
     const clean = text.replace(/```json|```/g, "").trim();
     return JSON.parse(clean);
-  } catch {
+  } catch (e) {
+    console.log("Blurb parse error:", e);
+    console.log("Raw text received:", text);
     return rankings.map(() => "Blurb unavailable.");
   }
 }

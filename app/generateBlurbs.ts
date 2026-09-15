@@ -78,7 +78,7 @@ export async function generateTeamBlurbs(rankings: any[], isOffseason: boolean, 
 Record: ${team.wins}-${team.losses} | Season points: ${team.points.toFixed(1)} | Week ${week} actual: ${team.actualPts ? team.actualPts.toFixed(1) : 'N/A'}
 Last year finish: #${lastYearFinish}
 Manager context: ${context}
-Roster (sorted by projection, with actual week ${week} scores where available — OVERPERFORMED and BUSTED flags indicate players who significantly exceeded or missed expectations):
+Roster (sorted by projection — [STARTER] played this week, [BENCH] did not. OVERPERFORMED = significantly beat projection. BUSTED = significantly missed projection):
 ${players.slice(0, 12).join("\n")}
 ${injuryNote}`;
   }).join("\n\n");
@@ -104,11 +104,11 @@ Write a preseason scouting report for each team. Dry, sharp, confident — like 
 
 Ranking tiers:
 - #1-3: Genuine championship threats
-- #4-6: Make the playoffs but have real questions  
+- #4-6: Make the playoffs but have real questions
 - #7-9: On the bubble
 - #10-12: Rebuilding or tanking
 
-Only use country nicknames (Germany/Cregg, Russia/Dlugos, France/Sherlock, NATO/Commish) if there is a genuinely fresh angle — do not recycle.
+Only use country nicknames if there is a genuinely fresh angle — do not recycle.
 
 Rules:
 - Use nickname only, never team name
@@ -116,40 +116,41 @@ Rules:
 - Player team affiliations are listed — use them, do not guess where players play
 - One sharp observation per blurb max
 - Do not invent personality traits not in the manager context
-- 4-5 sentences, 75-100 words
+- 5-6 sentences, 100-130 words
 - Return ONLY a valid JSON array of strings in order. No markdown, no extra text.
 
 Teams:
 ${teamSummaries}`
-    : `You are writing the week ${week} power rankings for the Chiraq Dynasty League.
+    : `You are writing the week ${week} power rankings for the Chiraq Dynasty League. These are POWER RANKINGS — not game recaps. The matchup recaps handle score breakdowns. Your job is big picture analysis.
 
 ${styleExamples}
 
-Write a weekly power rankings blurb for each team. These should be forward-looking — where does this team stand and where are they headed? Use week ${week} results as evidence for your assessment, not as the story itself. The story is the team's trajectory. One key week 1 observation that tells us something meaningful about this team's season outlook, not a point-by-point recap.
-Ranking tiers:
-- #1-3: Playing like championship contenders right now
-- #4-6: Playoff teams with questions
-- #7-9: Fighting to stay relevant  
-- #10-12: In trouble or tanking
+For each team write a forward-looking assessment covering:
+- Where this team stands in the league hierarchy right now
+- Their key strengths — who are the real weapons on this roster
+- Their genuine concerns — injuries, weak positions, depth issues
+- How they performed vs expectations this week — relative performance vs projection, not raw scores
+- Players who emerged as potential studs based on OVERPERFORMED flags
+- Position imbalances that could lead to trades
+- One natural closer — punchy, forward-looking, fits the team's situation
 
-Only use country nicknames if there is a genuinely NEW angle this week — do not repeat lines used in previous weeks.
+Do NOT lead with or center blurbs on specific point totals — that is the matchup recap job.
+
+Only use country nicknames if there is a genuinely fresh angle — do not recycle old lines.
 
 Rules:
 - Use nickname only, never team name
-- CRITICAL: Only reference players listed in the roster section with their actual team affiliations
-- Players marked [STARTER] actually played this week — focus analysis on them
-- Players marked [BENCH] did not start — only mention if they OVERPERFORMED significantly as a sleeper worth watching
-- Reference actual week ${week} scores — proj means projection, actual means what they scored
-- Call out OVERPERFORMED and BUSTED players specifically by name
-- NEVER reference a backup QB's points as meaningful unless they are marked [STARTER] or clearly competing for the starting job
-- When mentioning a QB make clear if they started or are a depth stash
-- One personality observation per blurb max — football analysis comes first
+- CRITICAL: Only reference players listed in the roster section with their correct team affiliations
+- Players marked [STARTER] actually played — focus on them
+- Players marked [BENCH] did not start — only mention if OVERPERFORMED significantly
+- NEVER reference a backup QB's weekly points unless they are [STARTER] or clearly competing for the job
+- When a player scored 30+ points note them as a potential difference maker
+- Do not make definitive season-long statements from one week of data
+- Identify position imbalances as potential trade opportunities
 - Do not recycle the same personality jokes from previous weeks
+- One personality observation per blurb max — analysis comes first
 - 5-6 sentences, 100-130 words
 - Return ONLY a valid JSON array of strings in order. No markdown, no extra text.
-- Do not make definitive season-long statements based on one week of data — use language like "could be" or "worth watching" when projecting trends
-- Identify position imbalances — if a team has excess depth at one position and a clear gap at another, call it out as a potential trade opportunity
-- End each blurb with one sharp, natural observation — a forward-looking note, a dry joke, or a punchy closer that fits the team's situation. Do not force it but do not skip it either.
 
 Teams:
 ${teamSummaries}`;
@@ -170,7 +171,6 @@ ${teamSummaries}`;
 
   const data = await response.json();
   const text = data.content[0].text;
-  console.log("Claude blurb response:", JSON.stringify(data).slice(0, 500));
 
   try {
     const clean = text.replace(/```json|```/g, "").trim();

@@ -133,13 +133,21 @@ export default async function Home() {
       return `[${role}] ${p.full_name} (${p.position}, ${p.team || 'FA'}) ${proj}${actual}${exceeded}${busted}`;
     };
 
+    const formatPlayerForBlurb = (p: any, isStarter: boolean) => {
+      const role = isStarter ? 'STARTER' : 'BENCH';
+      const exceeded = p.actual_pts !== undefined && p.pts_ppr > 0 && p.actual_pts > p.pts_ppr * 1.2 ? ' (OVERPERFORMED)' : '';
+      const busted = p.actual_pts !== undefined && p.pts_ppr > 10 && p.actual_pts < p.pts_ppr * 0.5 ? ' (BUSTED)' : '';
+      const bigGame = p.actual_pts !== undefined && p.actual_pts >= 30 ? ' (30+ POINT GAME)' : '';
+      return `[${role}] ${p.full_name} (${p.position}, ${p.team || 'FA'})${exceeded}${busted}${bigGame}`;
+    };
+    
     rosterPlayers[user.username] = [
       ...allEligibleByProjection
         .filter((p: any) => starterIds.has(p.player_id))
-        .map((p: any) => formatPlayer(p, true)),
+        .map((p: any) => formatPlayerForBlurb(p, true)),
       ...allEligibleByProjection
         .filter((p: any) => !starterIds.has(p.player_id))
-        .map((p: any) => formatPlayer(p, false))
+        .map((p: any) => formatPlayerForBlurb(p, false))
     ];
 
     const injured = (roster.players || [])
@@ -249,6 +257,28 @@ bench: allEligibleByProjection
     const rosterB = rosters.find((r: any) => r.roster_id === pair[1]?.roster_id);
     const userA = userMap[rosterA?.owner_id];
     const userB = userMap[rosterB?.owner_id];
+    const ptsA = pair[0]?.points || 0;
+    const ptsB = pair[1]?.points || 0;
+
+    const getTopPerformers = (matchupEntry: any, roster: any) => {
+      if (!matchupEntry?.players_points) return [];
+      return Object.entries(matchupEntry.players_points)
+        .filter(([id]: any) => (roster?.starters || []).includes(id))
+        .map(([id, pts]: any) => {
+          const player = allPlayers[id];
+          return { name: player?.full_name || id, pts: pts as number };
+        })
+        .filter(p => p.pts > 0)
+        .sort((a, b) => b.pts - a.pts)
+        .slice(0, 4)
+        .map(p => `${p.name} (${p.pts.toFixed(1)})`);
+    };
+
+    const winnerEntry = ptsA > ptsB ? pair[0] : pair[1];
+    const loserEntry = ptsA > ptsB ? pair[1] : pair[0];
+    const winnerRoster = ptsA > ptsB ? rosterA : rosterB;
+    const loserRoster = ptsA > ptsB ? rosterB : rosterA;
+
     return {
       matchup_id: pair[0]?.matchup_id,
       teamA: userA?.name || "Unknown",
@@ -257,11 +287,12 @@ bench: allEligibleByProjection
       managerB: userB?.username || "Unknown",
       avatarA: userA?.avatar,
       avatarB: userB?.avatar,
-      ptsA: pair[0]?.points || 0,
-      ptsB: pair[1]?.points || 0,
+      ptsA,
+      ptsB,
+      winnerPlayers: getTopPerformers(winnerEntry, winnerRoster),
+      loserPlayers: getTopPerformers(loserEntry, loserRoster),
     };
   });
-
   let recaps: string[] = [];
   if (!IS_OFFSEASON) {
     const { data: cachedRecaps } = await supabase

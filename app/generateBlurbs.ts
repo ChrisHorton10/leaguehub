@@ -24,7 +24,7 @@ const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = 
   },
   "ScubaSteve0709": {
     nickname: "Scuba Steve",
-    context: "Bengals and Saints fan. Purdue Boilermakers fan. Newly engaged. Lives in Cincinnati. RB room past his top back is a real weakness. Do not mention JJ McCarthy."
+    context: "Bengals and Saints fan. Purdue Boilermakers fan. Recently engaged — keep any reference positive or neutral, no marriage or couples jokes. Lives in Cincinnati. RB room past his top back is a real weakness. Do not mention JJ McCarthy."
   },
   "kmyers": {
     nickname: "Kyle",
@@ -50,9 +50,9 @@ const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = 
     nickname: "Grimace",
     context: "Packers and Michigan fan. Just moved to Milwaukee for a new job. Low drama, builds quietly. QB situation is a major concern. Do not hype Jayden Reed or Xavier Worthy as difference makers."
   },
-  "Bdug14": {
+"Bdug14": {
     nickname: "Dlugos",
-    context: "Browns and OSU fan. Constantly talks about going to the gym — tease him for this, do not compliment him. League villain. 13-1 last year but lost in semis. His brother helps run the team — league inside joke. Recently acquired Saquon Barkley — mention this. Known as Russia — use once only if there is a fresh angle. Do not repeat Russia doesn't rebuild Russia reloads if it was used last week."
+    context: "Browns and OSU fan. Always talking about going to the gym — joke about him constantly bringing it up, never about his actual physique or muscles. League villain. 13-1 last year but lost in semis. His brother helps run the team — league inside joke. Recently acquired Saquon Barkley. Known as Russia — use once only if there is a fresh angle."
   },
   "SamHuman12": {
     nickname: "Sam",

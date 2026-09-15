@@ -55,6 +55,7 @@ export default async function Home() {
   });
 
   let allPlayers: Record<string, any> = {};
+  let weekStats: Record<string, any> = {};
   let weekProjections: Record<string, any> = {};
   try {
     const [playersRes, projectionsRes] = await Promise.all([
@@ -297,7 +298,6 @@ export default async function Home() {
     }
   }
 
-  let weekStats: Record<string, any> = {};
   let hotColdData = { hot: [] as any[], cold: [] as any[] };
   if (!IS_OFFSEASON) {
     try {

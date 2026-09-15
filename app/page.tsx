@@ -203,7 +203,7 @@ bench: allEligibleByProjection
 
       const finalScore = IS_OFFSEASON
         ? (rosterScore * 0.7) + (claudeScore * 10 * 0.3)
-        : (points * 0.4) + (wins * 20 * 0.3) + (rosterScore * 0.2) + (claudeScore * 10 * 0.1);
+        : (points * 0.3) + (wins * 20 * 0.3) + (rosterScore * 0.15) + (claudeScore * 10 * 0.25);
 
       return {
         teamName: user?.name || "Unknown",

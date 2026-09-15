@@ -145,8 +145,9 @@ Rules:
 - When mentioning a QB make clear if they started or are a depth stash
 - One personality observation per blurb max — football analysis comes first
 - Do not recycle the same personality jokes from previous weeks
-- 4-5 sentences, 75-100 words
+- 5-6 sentences, 100-130 words
 - Return ONLY a valid JSON array of strings in order. No markdown, no extra text.
+- Do not make definitive season-long statements based on one week of data — use language like "could be" or "worth watching" when projecting trends
 
 Teams:
 ${teamSummaries}`;

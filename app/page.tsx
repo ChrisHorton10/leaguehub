@@ -11,7 +11,7 @@ const supabase = createClient(
 
 const LEAGUE_ID = "1330820695583625216";
 const CURRENT_WEEK = 1;
-const IS_OFFSEASON = true;
+const IS_OFFSEASON = false;
 
 const MANAGER_NICKNAMES: Record<string, string> = {
   "chrishorton10": "Commish",
@@ -109,8 +109,18 @@ export default async function Home() {
     const lineupScore = (projectedPts * 0.75) + (benchScore * 0.25);
 
     rosterScores[user.username] = lineupScore;
-    rosterPlayers[user.username] = startingLineup.map((p: any) => `${p.full_name} (${p.position})`);
-
+    const allEligibleByProjection = (roster.players || [])
+    .filter((id: string) => !taxiIds.has(id) && !reserveIds.has(id))
+    .map((id: string) => {
+      const player = allPlayers[id];
+      const proj = weekProjections[id];
+      return { ...player, player_id: id, pts_ppr: proj?.pts_ppr || 0 };
+    })
+    .filter((p: any) => p && p.full_name && ["QB", "RB", "WR", "TE"].includes(p.position))
+    .sort((a: any, b: any) => b.pts_ppr - a.pts_ppr)
+    .slice(0, 12);
+  
+    rosterPlayers[user.username] = allEligibleByProjection.map((p: any) => `${p.full_name} (${p.position}, ${p.team || 'FA'}) proj:${p.pts_ppr.toFixed(1)}`);
     const injured = (roster.players || [])
       .map((id: string) => allPlayers[id])
       .filter((p: any) => p && p.injury_status && ["Out", "IR", "Doubtful", "Questionable"].includes(p.injury_status))
@@ -121,9 +131,20 @@ export default async function Home() {
       username: user.username,
       teamName: user.name || user.username,
       nickname: MANAGER_NICKNAMES[user.username] || user.username,
-      starters: startingLineup.map((p: any) => `${p.full_name} (${p.position}) proj:${p.pts_ppr.toFixed(1)}`),
-      bench: benchPlayers.map((p: any) => `${p.full_name} (${p.position}) proj:${p.pts_ppr.toFixed(1)}`),
-      projectedPts
+      starters: startingLineup.map((p: any) => {
+        const actual = weekStats[p.player_id]?.pts_ppr;
+        const actualStr = actual !== undefined ? ` actual:${actual.toFixed(1)}` : '';
+        return `${p.full_name} (${p.position}, ${p.team || 'FA'}) proj:${p.pts_ppr.toFixed(1)}${actualStr}`;
+      }),
+      bench: benchPlayers.map((p: any) => {
+        const actual = weekStats[p.player_id]?.pts_ppr;
+        const actualStr = actual !== undefined ? ` actual:${actual.toFixed(1)}` : '';
+        return `${p.full_name} (${p.position}, ${p.team || 'FA'}) proj:${p.pts_ppr.toFixed(1)}${actualStr}`;
+      }),
+      projectedPts,
+      actualPts: actualStarters.reduce((sum: number, p: any) => {
+        return sum + (weekStats[p.player_id]?.pts_ppr || 0);
+      }, 0)
     });
   });
 
@@ -276,13 +297,16 @@ export default async function Home() {
     }
   }
 
+  let weekStats: Record<string, any> = {};
   let hotColdData = { hot: [] as any[], cold: [] as any[] };
-  if (!IS_OFFSEASON && CURRENT_WEEK >= 3) {
+  if (!IS_OFFSEASON) {
     try {
       const statsRes = await fetch(`https://api.sleeper.app/v1/stats/nfl/regular/2026/${CURRENT_WEEK}`, { cache: "no-store" });
-      const weekStats = await statsRes.json();
-      await saveWeeklyStats(supabase, CURRENT_WEEK, matchups, allPlayers, weekStats);
-      hotColdData = await getHotColdPlayers(supabase, CURRENT_WEEK);
+      weekStats = await statsRes.json();
+      if (CURRENT_WEEK >= 3) {
+        await saveWeeklyStats(supabase, CURRENT_WEEK, matchups, allPlayers, weekStats);
+        hotColdData = await getHotColdPlayers(supabase, CURRENT_WEEK);
+      }
     } catch (e) {
       console.log("Could not fetch week stats", e);
     }

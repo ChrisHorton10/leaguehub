@@ -78,11 +78,11 @@ export async function generateTeamBlurbs(rankings: any[], isOffseason: boolean, 
     const lastYearFinish = (LAST_YEAR_FINISH as any)[team.username] || "unknown";
 
     return `#${index + 1} ${team.teamName} (${nickname})
-Record: ${team.wins}-${team.losses} | Points: ${team.points.toFixed(1)}
-Last year finish: #${lastYearFinish}
-Manager context: ${context}
-${rosterNote}
-${injuryNote}`;
+    Record: ${team.wins}-${team.losses} | Projected: ${team.points.toFixed(1)} | Actual Week ${week}: ${team.actualPts ? team.actualPts.toFixed(1) : 'N/A'}
+    Last year finish: #${lastYearFinish}
+    Manager context: ${context}
+    ${rosterNote}
+    ${injuryNote}`;
   }).join("\n\n");
 
   const styleExamples = `
@@ -153,6 +153,10 @@ Rules:
 - Teams ranked #1-3 are genuine championship threats. #4-6 make the playoffs but have real questions. #7-9 are on the bubble. #10-12 are rebuilding or out of contention. Write each team accordingly.
 - 4-5 sentences, 75-100 words per blurb
 - Return ONLY a valid JSON array of strings in the same order. No markdown, no extra text.
+- Reference actual week scoring where relevant — call out players who exceeded or missed expectations
+- Flag bench players who scored big as potential future starters or sleepers
+- Do not repeat the same personality jokes from previous weeks — find fresh angles
+- Country nicknames should only be used if there is a genuinely new observation to attach to them — do not use them just as a crutch
 Teams:
 ${teamSummaries}`;
 

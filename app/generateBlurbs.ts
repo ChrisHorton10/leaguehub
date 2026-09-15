@@ -12,26 +12,27 @@ export const LAST_YEAR_FINISH: Record<string, number> = {
   "SamHuman12": 11,
   "Sher2Lose": 12
 };
+
 const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = {
   "chrishorton10": {
     nickname: "Commish",
-    context: "Commissioner. Cowboys die-hard with delusional annual confidence. Loves to gamble. Lead with the actual roster analysis first — Cowboys blind faith as the closer, not the opener."
+    context: "Commissioner. Cowboys die-hard with delusional annual confidence. Loves to gamble. Lead with roster analysis first — Cowboys blind faith as the closer only if it fits naturally."
   },
   "BCregg": {
     nickname: "Cregg",
-    context: "Giants fan, Syracuse fan, Buffalo Sabres fan, Yankees fan. Gets into arguments when drunk. Big hockey and video game guy. Known as Germany — reference once only. Got pushed out as manager of the league softball team lineup a few games in. Loves to gamble."
+    context: "Giants fan, Syracuse fan, Buffalo Sabres fan, Yankees fan. Gets into arguments when drunk. Big hockey and video game guy. Known as Germany — only reference if there is a genuinely fresh angle, do not recycle old lines. Got pushed out as manager of the league softball team lineup. Loves to gamble. RB depth is a real concern past his top options."
   },
   "ScubaSteve0709": {
     nickname: "Scuba Steve",
-    context: "Bengals and Saints fan. Purdue Boilermakers fan. Newly engaged. Has always lived in Cincinnati — do not frame it as something new. His biggest weakness is the RB room — past Achane there is basically nothing and that is the real concern for this team. Do not mention JJ McCarthy."
+    context: "Bengals and Saints fan. Purdue Boilermakers fan. Newly engaged. Lives in Cincinnati. RB room past his top back is a real weakness. Do not mention JJ McCarthy."
   },
   "kmyers": {
     nickname: "Kyle",
-    context: "Browns and Nebraska fan — two historically painful fanbases. Hungarian and makes sure people know it. Drives a Tesla — natural Elon or self-driving joke works but do not force it. Has been a trade pinata historically. Lovable guy. In golf he launches the ball but it rarely goes straight and really struggles with the wedge."
+    context: "Browns and Nebraska fan — two historically painful fanbases. Hungarian and makes sure people know it. Drives a Tesla — natural Elon or self-driving joke works if it fits, do not force it. Has been a trade pinata historically. Lovable guy. In golf he launches the ball but it rarely goes straight and really struggles with the wedge."
   },
   "Sher2Lose": {
     nickname: "Sherlock",
-    context: "Bengals fan. Short. Always late to everything — do not use being late as a fantasy metaphor. Has real money on Bengals player outcomes. Known as France — reference once only. Actively and intentionally tanking for the number one pick — deliberate strategy not a collapse."
+    context: "Bengals fan. Short. Always late to everything — do not use being late as a fantasy metaphor. Has real money on Bengals player outcomes. Known as France — reference once only if there is a fresh angle. Actively and intentionally tanking for the number one pick — deliberate strategy not a collapse."
   },
   "Broth22": {
     nickname: "Brothers",
@@ -39,29 +40,30 @@ const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = 
   },
   "shazman123": {
     nickname: "Shaz",
-    context: "Pakistani, lives in Milwaukee. Packers fan. One of the few minority friends in the group. The group jokes his roster is a security threat — TSA reference works well. Keep it light and subtle."
+    context: "Pakistani, lives in Milwaukee. Packers fan. One of the few minority friends in the group. TSA or security threat joke works if genuinely fresh — do not recycle the same line every week."
   },
   "ctracewell": {
     nickname: "Tracewell",
-    context: "Browns and OSU fan. Does DJ sets on the side — gentle ribbing only, not mean. Moved to NYC a while back. Actively tanking for the number one pick. Jayden Daniels is his only real asset. Do not mention Cate or his girlfriend at all."
+    context: "Browns and OSU fan. Does DJ sets on the side — gentle ribbing only. Moved to NYC a while back. Actively tanking for the number one pick. Do not mention his girlfriend."
   },
   "GrimaceHugeSack": {
     nickname: "Grimace",
-    context: "Packers and Michigan fan. Just moved to Milwaukee for a new job. Low drama, builds quietly. Malik Willis at QB on the Dolphins is a giant problem — unproven on a bad team. Do not hype Jayden Reed or Xavier Worthy as difference makers."
+    context: "Packers and Michigan fan. Just moved to Milwaukee for a new job. Low drama, builds quietly. QB situation is a major concern. Do not hype Jayden Reed or Xavier Worthy as difference makers."
   },
   "Bdug14": {
     nickname: "Dlugos",
-    context: "Browns and OSU fan. Constantly talks about going to the gym and getting big — tease him for this, do not compliment him. League villain. 13-1 last year but lost in semis. His brother helps run the team — league inside joke. Recently acquired Saquon Barkley — this must be mentioned as a significant addition regardless of what the key players list shows. Known as Russia — reference once. Close with Russia doesn't rebuild, Russia reloads."
+    context: "Browns and OSU fan. Constantly talks about going to the gym — tease him for this, do not compliment him. League villain. 13-1 last year but lost in semis. His brother helps run the team — league inside joke. Recently acquired Saquon Barkley — mention this. Known as Russia — use once only if there is a fresh angle. Do not repeat Russia doesn't rebuild Russia reloads if it was used last week."
   },
   "SamHuman12": {
     nickname: "Sam",
-    context: "Bears fan who roots for every Clemson player in the NFL. Pessimistic by nature — especially about Clemson every year, loves them but always expects disappointment and they usually deliver it. Clemson used to be a CFB dynasty, not anymore. Cade Klubnik just entered the NFL on the Jets — Sam now has a Clemson guy to quietly stress about there too. Active trader who tends to win his trades."
+    context: "Bears fan who roots for every Clemson player in the NFL. Pessimistic by nature — especially about Clemson every year. Cade Klubnik just entered the NFL on the Jets. Active trader who tends to win his trades."
   },
   "Gillilig": {
     nickname: "Gill",
-    context: "Bears fan in Chicago but gets called a bandwagon — roots for Duke, OSU, and the Bears. Obsessed with Caleb Williams succeeding. Big into Rocket League and hunting for a Caleb Williams sports card one of one. Has three legitimate starting QBs — do not question the QB situation, it is a strength. The front nine looks great, the back nine is where this team tends to fall apart — use this golf reference if it fits naturally."
+    context: "Bears fan in Chicago but gets called a bandwagon — roots for Duke, OSU, and the Bears. Obsessed with Caleb Williams succeeding. Big into Rocket League and hunting for a Caleb Williams sports card one of one. Has multiple starting-caliber QBs — QB situation is a strength. In golf the front nine looks great but the back nine is always a disaster."
   }
 };
+
 export async function generateTeamBlurbs(rankings: any[], isOffseason: boolean, week: number, rosterInjuries: any = {}, rosterPlayers: any = {}) {
   const teamSummaries = rankings.map((team, index) => {
     const persona = (MANAGER_PERSONAS as any)[team.username];
@@ -69,94 +71,81 @@ export async function generateTeamBlurbs(rankings: any[], isOffseason: boolean, 
     const context = persona?.context || "";
     const injuries = rosterInjuries[team.username] || [];
     const players = rosterPlayers[team.username] || [];
-    const injuryNote = injuries.length > 0
-      ? `Injury concerns: ${injuries.join(", ")}`
-      : "No major injury concerns";
-    const rosterNote = players.length > 0
-      ? `Key players: ${players.slice(0, 8).join(", ")}`
-      : "Roster unknown";
     const lastYearFinish = (LAST_YEAR_FINISH as any)[team.username] || "unknown";
+    const injuryNote = injuries.length > 0 ? `Injury concerns: ${injuries.join(", ")}` : "No major injury concerns";
 
     return `#${index + 1} ${team.teamName} (${nickname})
-    Record: ${team.wins}-${team.losses} | Projected: ${team.points.toFixed(1)} | Actual Week ${week}: ${team.actualPts ? team.actualPts.toFixed(1) : 'N/A'}
-    Last year finish: #${lastYearFinish}
-    Manager context: ${context}
-    ${rosterNote}
-    ${injuryNote}`;
+Record: ${team.wins}-${team.losses} | Season points: ${team.points.toFixed(1)} | Week ${week} actual: ${team.actualPts ? team.actualPts.toFixed(1) : 'N/A'}
+Last year finish: #${lastYearFinish}
+Manager context: ${context}
+Roster (sorted by projection, with actual week ${week} scores where available — OVERPERFORMED and BUSTED flags indicate players who significantly exceeded or missed expectations):
+${players.slice(0, 12).join("\n")}
+${injuryNote}`;
   }).join("\n\n");
 
   const styleExamples = `
 STYLE EXAMPLES — write in this voice:
 
-"Brothers — Reigning champ, still running the league like a pro. His team is legit — he's got all the pieces to strike again. But lets be honest, hes whipped harder than anyone in this league and outside of fantasy hes really only good at following instructions. Respect the team though."
+"Brothers — Reigning champ, still running the league like a pro. His team is legit — he has got all the pieces to strike again. But lets be honest, hes whipped harder than anyone in this league and outside of fantasy hes really only good at following instructions. Respect the team though."
 
 "Cregg — The leagues public enemy number one. Aggressive, fights with everyone, Germany through and through. Somehow has the roster to back it up. If he wins this year were all basically living under a dictatorship."
 
 "Dlugos — Browns fan so cursed already. Russia is back and more dangerous than ever after acquiring Saquon. His brother already has the lineup set through Week 10. 13-1 last year and still couldn't close — at some point the psycho GM energy has to translate."
 
-"Shaz — While his time in the US might be limited, Shaz continues to show why he is a major threat to league security. The dude just puts up points every week with Bijan and Jamarr doing damage."
-
-"Kyle — Someone came up to Kyle at softball and said Damn Nebraska and the Browns? Thats tough. Tough indeed. Wanna know who else is tough? His fantasy team when the QB is cooking."
+"Shaz — While his time in the US might be limited, Shaz continues to show why he is a major threat to security. The dude just puts up points every week with Bijan and Jamarr doing damage."
 `;
 
   const prompt = isOffseason
-    ? `You are writing the preseason power rankings column for the Chiraq Dynasty League — a 12-team dynasty league of close friends who love football, trash talk, and giving each other hell.
+    ? `You are writing the preseason power rankings for the Chiraq Dynasty League — a 12-team dynasty league of close friends who love football, trash talk, and giving each other hell.
 
 ${styleExamples}
 
-Write sharp, honest fantasy analysis with dry wit. The humor should come from specific, true observations — not setup/punchline jokes. Think of it like a beat writer who knows everyone in the league personally and isn't afraid to say what everyone is thinking. Funny because it's accurate, not because it's trying to be funny. One good dry observation per blurb that fits naturally — if it doesn't fit, skip it and just write good analysis.
+Write a preseason scouting report for each team. Dry, sharp, confident — like someone who knows these guys well. One well-placed observation per blurb, not forced jokes. Football analysis first, personality second.
 
-Tone guidelines by ranking position:
-- #1-3: Clear favorites. Dangerous, championship caliber.
-- #4-5: Solid contenders with one real question mark.
-- #6-8: Middle of the pack. Uncertain. Do not hype them.
-- #9-10: Outside looking in. Real concerns.
-- #11-12: Rebuilding or tanking. Be honest, make it pointed.
+Ranking tiers:
+- #1-3: Genuine championship threats
+- #4-6: Make the playoffs but have real questions  
+- #7-9: On the bubble
+- #10-12: Rebuilding or tanking
 
-Only reference country nicknames for: Cregg (Germany), Dlugos (Russia), Sherlock (France), Commish (NATO). Everyone else — use context as background flavor only.
+Only use country nicknames (Germany/Cregg, Russia/Dlugos, France/Sherlock, NATO/Commish) if there is a genuinely fresh angle — do not recycle.
 
 Rules:
 - Use nickname only, never team name
-- CRITICAL: Use ONLY the players listed in the key players section. Do not add, remove, or substitute any players based on your own knowledge. If a player is on the list they are on this roster. If they are not on the list do not mention them.
-- Lead with roster analysis — who are the real difference makers, what are the genuine concerns based on the players listed
-- Reference specific players by name and what they bring to this roster
-- The flex position can be filled by WR, RB, or TE — do not assume a team can only start one TE
-- Use your knowledge of 2026 NFL training camps, rookie standouts, and player situations when relevant to players actually on the roster
-- One sharp, natural personality observation per blurb — the analysis comes first, personality is the closer
-- Do not invent personality traits or storylines not explicitly stated in the manager context
-- Do not force jokes — if a natural observation lands, use it. If not, just write sharp analysis.
-- Be honest about weaknesses — if the RB room is bad, say it. If the QB situation is a concern, say it.
-- Teams ranked #1-3 are genuine championship threats. #4-6 make the playoffs but have real questions. #7-9 are on the bubble. #10-12 are rebuilding or out of contention. Write each team accordingly.
-- 4-5 sentences, 75-100 words per blurb
-- Return ONLY a valid JSON array of strings in the same order. No markdown, no extra text.
+- CRITICAL: Only reference players listed in the roster section. Do not add players from your own knowledge.
+- Player team affiliations are listed — use them, do not guess where players play
+- One sharp observation per blurb max
+- Do not invent personality traits not in the manager context
+- 4-5 sentences, 75-100 words
+- Return ONLY a valid JSON array of strings in order. No markdown, no extra text.
+
 Teams:
 ${teamSummaries}`
     : `You are writing the week ${week} power rankings for the Chiraq Dynasty League.
 
 ${styleExamples}
 
-Write a weekly blurb for each team. Reference their record, recent performance, injuries, and playoff picture. Dry, sharp tone. Gets more dire as you go down the rankings.
+Write a weekly blurb for each team. This is the most important rule: USE THE ACTUAL WEEK ${week} SCORES in the player data to write meaningful analysis. Players marked OVERPERFORMED exceeded expectations significantly. Players marked BUSTED missed badly. Call these out. Mention bench players who scored big as potential future difference makers. This should feel like a real weekly recap written by someone who watched the scores come in.
 
-Only reference country nicknames for: Cregg (Germany), Dlugos (Russia), Sherlock (France), Commish (NATO).
+Ranking tiers:
+- #1-3: Playing like championship contenders right now
+- #4-6: Playoff teams with questions
+- #7-9: Fighting to stay relevant  
+- #10-12: In trouble or tanking
+
+Only use country nicknames if there is a genuinely NEW angle this week — do not repeat lines used in previous weeks.
 
 Rules:
 - Use nickname only, never team name
-- CRITICAL: Use ONLY the players listed in the key players section. Do not add, remove, or substitute any players based on your own knowledge. If a player is on the list they are on this roster. If they are not on the list do not mention them.
-- Lead with roster analysis — who are the real difference makers, what are the genuine concerns based on the players listed
-- Reference specific players by name and what they bring to this roster
-- The flex position can be filled by WR, RB, or TE — do not assume a team can only start one TE
-- Reference their actual record, recent performance, and injury situation based on the data provided
-- One sharp, natural personality observation per blurb — the analysis comes first, personality is the closer
-- Do not invent personality traits or storylines not explicitly stated in the manager context
-- Do not force jokes — if a natural observation lands, use it. If not, just write sharp analysis.
-- Be honest about weaknesses — if the RB room is bad, say it. If the QB situation is a concern, say it.
-- Teams ranked #1-3 are genuine championship threats. #4-6 make the playoffs but have real questions. #7-9 are on the bubble. #10-12 are rebuilding or out of contention. Write each team accordingly.
-- 4-5 sentences, 75-100 words per blurb
-- Return ONLY a valid JSON array of strings in the same order. No markdown, no extra text.
-- Reference actual week scoring where relevant — call out players who exceeded or missed expectations
-- Flag bench players who scored big as potential future starters or sleepers
-- Do not repeat the same personality jokes from previous weeks — find fresh angles
-- Country nicknames should only be used if there is a genuinely new observation to attach to them — do not use them just as a crutch
+- CRITICAL: Only reference players listed in the roster section with their actual team affiliations
+- Reference actual week ${week} scores — proj means projection, actual means what they scored
+- Call out OVERPERFORMED and BUSTED players specifically
+- Flag bench players who scored big as potential starters or sleepers
+- One personality observation per blurb max — football analysis comes first
+- Do not recycle the same personality jokes from previous weeks
+- 4-5 sentences, 75-100 words
+- Return ONLY a valid JSON array of strings in order. No markdown, no extra text.
+
 Teams:
 ${teamSummaries}`;
 

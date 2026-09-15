@@ -55,23 +55,27 @@ export default async function Home() {
   });
 
   let allPlayers: Record<string, any> = {};
-  let weekStats: Record<string, any> = {};
   let weekProjections: Record<string, any> = {};
+  let weekStats: Record<string, any> = {};
+
   try {
-    const [playersRes, projectionsRes] = await Promise.all([
+    const [playersRes, projectionsRes, statsRes] = await Promise.all([
       fetch("https://api.sleeper.app/v1/players/nfl", { cache: "no-store" }),
-      fetch(`https://api.sleeper.app/v1/projections/nfl/regular/2026/${CURRENT_WEEK}`, { cache: "no-store" })
+      fetch(`https://api.sleeper.app/v1/projections/nfl/regular/2026/${CURRENT_WEEK}`, { cache: "no-store" }),
+      IS_OFFSEASON ? Promise.resolve(null) : fetch(`https://api.sleeper.app/v1/stats/nfl/regular/2026/${CURRENT_WEEK}`, { cache: "no-store" })
     ]);
     allPlayers = await playersRes.json();
     weekProjections = await projectionsRes.json();
+    if (statsRes) weekStats = await statsRes.json();
   } catch (e) {
-    console.log("Could not fetch players or projections", e);
+    console.log("Could not fetch player data", e);
   }
 
   const rosterInjuries: Record<string, any[]> = {};
   const rosterPlayers: Record<string, string[]> = {};
   const rosterScores: Record<string, number> = {};
   const rosterTeamData: any[] = [];
+  const teamActualPts: Record<string, number> = {};
 
   rosters.forEach((roster: any) => {
     const user = userMap[roster.owner_id];
@@ -80,12 +84,16 @@ export default async function Home() {
     const actualStarters = (roster.starters || []).map((id: string) => {
       const player = allPlayers[id];
       const proj = weekProjections[id];
+      const stat = weekStats[id];
       const pts = proj?.pts_ppr || 0;
-      if (!player) return { player_id: id, full_name: id, position: "DST", pts_ppr: pts };
-      return { ...player, player_id: id, pts_ppr: pts };
+      const actual = stat?.pts_ppr;
+      if (!player) return { player_id: id, full_name: id, position: "DST", pts_ppr: pts, actual_pts: actual };
+      return { ...player, player_id: id, pts_ppr: pts, actual_pts: actual };
     });
 
     const projectedPts = actualStarters.reduce((sum: number, p: any) => sum + (p.pts_ppr || 0), 0);
+    const actualPts = actualStarters.reduce((sum: number, p: any) => sum + (p.actual_pts || 0), 0);
+    teamActualPts[user.username] = actualPts;
 
     const startingLineup = actualStarters.filter((p: any) =>
       p.full_name && ["QB", "RB", "WR", "TE"].includes(p.position)
@@ -95,34 +103,39 @@ export default async function Home() {
     const taxiIds = new Set((roster.taxi || []) as string[]);
     const reserveIds = new Set((roster.reserve || []) as string[]);
 
-    const benchPlayers = (roster.players || [])
-      .filter((id: string) => !starterIds.has(id) && !taxiIds.has(id) && !reserveIds.has(id))
+    const allEligibleByProjection = (roster.players || [])
+      .filter((id: string) => !taxiIds.has(id) && !reserveIds.has(id))
       .map((id: string) => {
         const player = allPlayers[id];
         const proj = weekProjections[id];
-        return { ...player, player_id: id, pts_ppr: proj?.pts_ppr || 0 };
+        const stat = weekStats[id];
+        return { ...player, player_id: id, pts_ppr: proj?.pts_ppr || 0, actual_pts: stat?.pts_ppr };
       })
       .filter((p: any) => p && p.full_name && ["QB", "RB", "WR", "TE"].includes(p.position))
       .sort((a: any, b: any) => b.pts_ppr - a.pts_ppr)
-      .slice(0, 5);
+      .slice(0, 15);
+
+    const benchPlayers = allEligibleByProjection
+      .filter((p: any) => !starterIds.has(p.player_id))
+      .slice(0, 7);
 
     const benchScore = benchPlayers.reduce((sum: number, p: any) => sum + (p.pts_ppr || 0), 0);
     const lineupScore = (projectedPts * 0.75) + (benchScore * 0.25);
 
     rosterScores[user.username] = lineupScore;
-    const allEligibleByProjection = (roster.players || [])
-    .filter((id: string) => !taxiIds.has(id) && !reserveIds.has(id))
-    .map((id: string) => {
-      const player = allPlayers[id];
-      const proj = weekProjections[id];
-      return { ...player, player_id: id, pts_ppr: proj?.pts_ppr || 0 };
-    })
-    .filter((p: any) => p && p.full_name && ["QB", "RB", "WR", "TE"].includes(p.position))
-    .sort((a: any, b: any) => b.pts_ppr - a.pts_ppr)
-    .slice(0, 12);
-  
-    rosterPlayers[user.username] = allEligibleByProjection.map((p: any) => `${p.full_name} (${p.position}, ${p.team || 'FA'}) proj:${p.pts_ppr.toFixed(1)}`);
+
+    const formatPlayer = (p: any) => {
+      const proj = `proj:${p.pts_ppr.toFixed(1)}`;
+      const actual = p.actual_pts !== undefined ? ` actual:${p.actual_pts.toFixed(1)}` : '';
+      const exceeded = p.actual_pts !== undefined && p.pts_ppr > 0 && p.actual_pts > p.pts_ppr * 1.2 ? ' (OVERPERFORMED)' : '';
+      const busted = p.actual_pts !== undefined && p.pts_ppr > 10 && p.actual_pts < p.pts_ppr * 0.5 ? ' (BUSTED)' : '';
+      return `${p.full_name} (${p.position}, ${p.team || 'FA'}) ${proj}${actual}${exceeded}${busted}`;
+    };
+
+    rosterPlayers[user.username] = allEligibleByProjection.map(formatPlayer);
+
     const injured = (roster.players || [])
+      .filter((id: string) => !taxiIds.has(id))
       .map((id: string) => allPlayers[id])
       .filter((p: any) => p && p.injury_status && ["Out", "IR", "Doubtful", "Questionable"].includes(p.injury_status))
       .map((p: any) => `${p.full_name} (${p.injury_status})`);
@@ -132,20 +145,10 @@ export default async function Home() {
       username: user.username,
       teamName: user.name || user.username,
       nickname: MANAGER_NICKNAMES[user.username] || user.username,
-      starters: startingLineup.map((p: any) => {
-        const actual = weekStats[p.player_id]?.pts_ppr;
-        const actualStr = actual !== undefined ? ` actual:${actual.toFixed(1)}` : '';
-        return `${p.full_name} (${p.position}, ${p.team || 'FA'}) proj:${p.pts_ppr.toFixed(1)}${actualStr}`;
-      }),
-      bench: benchPlayers.map((p: any) => {
-        const actual = weekStats[p.player_id]?.pts_ppr;
-        const actualStr = actual !== undefined ? ` actual:${actual.toFixed(1)}` : '';
-        return `${p.full_name} (${p.position}, ${p.team || 'FA'}) proj:${p.pts_ppr.toFixed(1)}${actualStr}`;
-      }),
+      starters: startingLineup.map(formatPlayer),
+      bench: benchPlayers.map(formatPlayer),
       projectedPts,
-      actualPts: actualStarters.reduce((sum: number, p: any) => {
-        return sum + (weekStats[p.player_id]?.pts_ppr || 0);
-      }, 0)
+      actualPts
     });
   });
 
@@ -184,9 +187,11 @@ export default async function Home() {
       const points = (roster.settings.fpts || 0) + ((roster.settings.fpts_decimal || 0) / 100);
       const rosterScore = rosterScores[username] || 0;
       const claudeScore = claudeScores[username] || 5;
+      const actualPts = teamActualPts[username] || 0;
+
       const finalScore = IS_OFFSEASON
-  ? (rosterScore * 0.7) + (claudeScore * 10 * 0.3)
-  : (rosterScore * 0.3) + (claudeScore * 10 * 0.2) + (points * 0.3) + (wins * 15 * 0.2);
+        ? (rosterScore * 0.7) + (claudeScore * 10 * 0.3)
+        : (points * 0.4) + (wins * 20 * 0.3) + (rosterScore * 0.2) + (claudeScore * 10 * 0.1);
 
       return {
         teamName: user?.name || "Unknown",
@@ -196,7 +201,7 @@ export default async function Home() {
         losses,
         points,
         powerScore: finalScore,
-        preseasonScore: finalScore
+        actualPts
       };
     })
     .sort((a: any, b: any) => b.powerScore - a.powerScore);
@@ -299,14 +304,10 @@ export default async function Home() {
   }
 
   let hotColdData = { hot: [] as any[], cold: [] as any[] };
-  if (!IS_OFFSEASON) {
+  if (!IS_OFFSEASON && CURRENT_WEEK >= 3) {
     try {
-      const statsRes = await fetch(`https://api.sleeper.app/v1/stats/nfl/regular/2026/${CURRENT_WEEK}`, { cache: "no-store" });
-      weekStats = await statsRes.json();
-      if (CURRENT_WEEK >= 3) {
-        await saveWeeklyStats(supabase, CURRENT_WEEK, matchups, allPlayers, weekStats);
-        hotColdData = await getHotColdPlayers(supabase, CURRENT_WEEK);
-      }
+      await saveWeeklyStats(supabase, CURRENT_WEEK, matchups, allPlayers, weekStats);
+      hotColdData = await getHotColdPlayers(supabase, CURRENT_WEEK);
     } catch (e) {
       console.log("Could not fetch week stats", e);
     }
@@ -375,24 +376,20 @@ export default async function Home() {
                     )}
                     <div>
                       <p className="text-base font-semibold text-white leading-tight">{team.teamName}</p>
-                      <p className="text-xs text-white/40 leading-tight mt-0.5">@{team.username} · {team.wins}–{team.losses}</p>
+                      <p className="text-xs text-white/40 leading-tight mt-0.5">
+                        @{team.username} · {team.wins}–{team.losses}
+                        {!IS_OFFSEASON && team.actualPts > 0 && ` · ${team.actualPts.toFixed(1)} pts`}
+                      </p>
                     </div>
                   </div>
-                  {!IS_OFFSEASON && (
-                    <div className="flex items-center gap-2">
-                      {lastWeekRanks[team.username] && (
-                        <span className={`text-sm font-mono ${
-                          lastWeekRanks[team.username] > index + 1 ? 'text-emerald-400' :
-                          lastWeekRanks[team.username] < index + 1 ? 'text-red-400' : 'text-white/20'
-                        }`}>
-                          {lastWeekRanks[team.username] > index + 1 ? `↑${lastWeekRanks[team.username] - (index + 1)}` :
-                           lastWeekRanks[team.username] < index + 1 ? `↓${(index + 1) - lastWeekRanks[team.username]}` : '—'}
-                        </span>
-                      )}
-                      <span className={`text-base font-bold tabular-nums ${index === 0 ? 'text-emerald-400' : 'text-white/60'}`}>
-                        {team.powerScore.toFixed(1)}
-                      </span>
-                    </div>
+                  {!IS_OFFSEASON && lastWeekRanks[team.username] && (
+                    <span className={`text-sm font-mono ${
+                      lastWeekRanks[team.username] > index + 1 ? 'text-emerald-400' :
+                      lastWeekRanks[team.username] < index + 1 ? 'text-red-400' : 'text-white/20'
+                    }`}>
+                      {lastWeekRanks[team.username] > index + 1 ? `↑${lastWeekRanks[team.username] - (index + 1)}` :
+                       lastWeekRanks[team.username] < index + 1 ? `↓${(index + 1) - lastWeekRanks[team.username]}` : '—'}
+                    </span>
                   )}
                 </div>
                 {blurbs[index] && (
@@ -412,7 +409,6 @@ export default async function Home() {
           {IS_OFFSEASON ? (
             <div className="rounded-2xl border border-white/[0.06] px-5 py-8 text-center">
               <p className="text-white/30 text-sm">Matchup recaps will appear here after week 1.</p>
-              <p className="text-white/15 text-xs mt-1">Each game will include a score breakdown and AI-generated recap.</p>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
@@ -426,11 +422,15 @@ export default async function Home() {
                         <div className="w-7 h-7 rounded-full bg-white/10 flex-shrink-0" />
                       )}
                       <span className="text-sm font-medium text-white/80 truncate">{game.teamA}</span>
-                      <span className="text-base font-bold text-white ml-auto">{game.ptsA.toFixed(2)}</span>
+                      <span className={`text-base font-bold ml-auto ${game.ptsA > game.ptsB ? 'text-emerald-400' : 'text-white/50'}`}>
+                        {game.ptsA.toFixed(2)}
+                      </span>
                     </div>
                     <span className="text-xs text-white/20 font-mono px-2">vs</span>
                     <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
-                      <span className="text-base font-bold text-white mr-auto">{game.ptsB.toFixed(2)}</span>
+                      <span className={`text-base font-bold mr-auto ${game.ptsB > game.ptsA ? 'text-emerald-400' : 'text-white/50'}`}>
+                        {game.ptsB.toFixed(2)}
+                      </span>
                       <span className="text-sm font-medium text-white/80 truncate text-right">{game.teamB}</span>
                       {game.avatarB ? (
                         <img src={`https://sleepercdn.com/avatars/thumbs/${game.avatarB}`} className="w-7 h-7 rounded-full flex-shrink-0" />
@@ -439,9 +439,11 @@ export default async function Home() {
                       )}
                     </div>
                   </div>
-                  <p className="text-sm text-white/50 italic border-t border-white/[0.04] pt-3">
-                    {recaps[index] || "Recap loading..."}
-                  </p>
+                  {recaps[index] && (
+                    <p className="text-sm text-white/50 italic border-t border-white/[0.04] pt-3">
+                      {recaps[index]}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
@@ -455,7 +457,6 @@ export default async function Home() {
           {IS_OFFSEASON || Object.keys(lastWeekRanks).length === 0 ? (
             <div className="rounded-2xl border border-white/[0.06] px-5 py-8 text-center">
               <p className="text-white/30 text-sm">Rankings movement will appear here after week 2.</p>
-              <p className="text-white/15 text-xs mt-1">We need two weeks of data to show who's climbing and who's dropping.</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-3">

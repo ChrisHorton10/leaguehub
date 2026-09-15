@@ -148,6 +148,8 @@ Rules:
 - 5-6 sentences, 100-130 words
 - Return ONLY a valid JSON array of strings in order. No markdown, no extra text.
 - Do not make definitive season-long statements based on one week of data — use language like "could be" or "worth watching" when projecting trends
+- Identify position imbalances — if a team has excess depth at one position and a clear gap at another, call it out as a potential trade opportunity
+- End each blurb with one sharp, natural observation — a forward-looking note, a dry joke, or a punchy closer that fits the team's situation. Do not force it but do not skip it either.
 
 Teams:
 ${teamSummaries}`;

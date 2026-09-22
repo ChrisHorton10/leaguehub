@@ -123,7 +123,10 @@ Rules:
 - Players marked [STARTER] actually played — focus on them
 - Players marked [BENCH] did not start — only mention if they scored 15+ points AND significantly beat their projection. Do not mention bench players who were projected low and scored low.
 - NEVER reference a backup QB's weekly points unless they are [STARTER]
-- Do not make definitive season-long statements from limited data
+- Do not make definitive season-long statements from limited data — one bad week from a top 10 player is noise, not a trend
+- Do not suggest a top tier player is underperforming or might not be the guy based on one or two weeks
+- Only mention total season points when it tells a meaningful story (e.g. a team that is 0-2 but scoring a lot is unlucky, worth noting)
+- Do not recite total points scored for every team — only use it when it adds to the narrative
 - Identify position imbalances as potential trade opportunities
 - Do not repeat personality jokes used in previous weeks — find fresh angles
 - Do not joke about anyone's physique or appearance

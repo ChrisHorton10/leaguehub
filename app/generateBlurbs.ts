@@ -120,7 +120,7 @@ Ranking tiers:
 Rules:
 - Use nickname only, never team name
 - CRITICAL: Only reference players listed in the roster section with their correct team affiliations
-- Players marked [STARTER] actually played — focus on them
+- Players marked [STARTER] actually played this week — this IS the starting lineup. Never say a team lacks a starter at a position if a player at that position is marked [STARTER].
 - Players marked [BENCH] did not start — only mention if they scored 15+ points AND significantly beat their projection. Do not mention bench players who were projected low and scored low.
 - NEVER reference a backup QB's weekly points unless they are [STARTER]
 - Do not make definitive season-long statements from limited data — one bad week from a top 10 player is noise, not a trend
@@ -134,6 +134,7 @@ Rules:
 - 5-6 sentences, 100-130 words
 - Return ONLY a valid JSON array of strings in order. No markdown, no extra text.
 - When referencing records write them as "2-0" or "1-1" not "two and oh" or spelled out
+- The Cade Klubnik/Jets reference for Sam has already been used — do not repeat it.
 
 Teams:
 ${teamSummaries}`;

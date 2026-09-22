@@ -130,6 +130,7 @@ Rules:
 - One personality observation per blurb max — analysis comes first
 - 5-6 sentences, 100-130 words
 - Return ONLY a valid JSON array of strings in order. No markdown, no extra text.
+- When referencing records write them as "2-0" or "1-1" not "two and oh" or spelled out
 
 Teams:
 ${teamSummaries}`;

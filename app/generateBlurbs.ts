@@ -48,15 +48,15 @@ const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = 
   },
   "GrimaceHugeSack": {
     nickname: "Grimace",
-    context: "Packers and Michigan fan. Just moved to Milwaukee for a new job. Low drama, builds quietly. QB situation is a major concern. Do not hype Jayden Reed or Xavier Worthy as difference makers."
+    context: "Packers and Michigan fan. Just moved to Milwaukee for a new job. Low drama, builds quietly. Has multiple weaknesses — QB situation is a major concern AND WR room is thin. Do not hype Jayden Reed or Xavier Worthy as difference makers. Carried by his RB room."
   },
   "Bdug14": {
     nickname: "Dlugos",
-    context: "Browns and OSU fan. Always talking about going to the gym — joke about him constantly bringing it up, never about his actual physique or muscles. League villain energy. 13-1 last year but lost in semis. His brother helps run the team — league inside joke. Recently acquired Saquon Barkley. Known as Russia — only if genuinely fresh angle, do not repeat Russia doesn't rebuild Russia reloads."
+    context: "Browns and OSU fan. Always talking about going to the gym — joke about him constantly bringing it up, never about his actual physique or muscles. League villain energy. 13-1 last year but lost in semis. His brother helps run the team — league inside joke. Recently acquired Saquon Barkley. Known as Russia — only if genuinely fresh angle, do not repeat old lines."
   },
   "SamHuman12": {
     nickname: "Sam",
-    context: "Bears fan who roots for every Clemson player in the NFL. Pessimistic by nature — especially about Clemson every year. Cade Klubnik just entered the NFL on the Jets — only reference this once across the season, do not repeat it. Active trader who tends to win his trades."
+    context: "Bears fan who roots for every Clemson player in the NFL. Pessimistic by nature — especially about Clemson every year. Cade Klubnik just entered the NFL on the Jets — only reference this once across the season. Active trader who tends to win his trades."
   },
   "Gillilig": {
     nickname: "Gill",
@@ -64,7 +64,7 @@ const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = 
   }
 };
 
-export async function generateTeamBlurbs(rankings: any[], isOffseason: boolean, week: number, rosterInjuries: any = {}, rosterPlayers: any = {}) {
+export async function generateTeamBlurbs(rankings: any[], isOffseason: boolean, week: number, rosterInjuries: any = {}, rosterPlayers: any = {}, weeklyNotes: string = "") {
   const teamSummaries = rankings.map((team, index) => {
     const persona = (MANAGER_PERSONAS as any)[team.username];
     const nickname = persona?.nickname || team.username;
@@ -99,13 +99,15 @@ ${styleExamples}
 
 CRITICAL STYLE NOTE: The examples above are the exact voice to match. They are personal, specific to these guys, and commit fully to the bit. Do not water it down. Do not be generic. Write like you know everyone in this league personally and are not afraid to say exactly what everyone is thinking. If the joke is there, commit to it. If it is not there, write sharp honest analysis instead of filler.
 
+${weeklyNotes ? `WEEKLY CONTEXT — use these timely notes to add relevant jokes and references this week:\n${weeklyNotes}\n` : ''}
+
 These are POWER RANKINGS — not game recaps. The matchup recaps handle score breakdowns. Your job is big picture analysis with personality.
 
 For each team cover:
 - Where this team stands right now and where they are headed
-- Key strengths and genuine concerns
-- How they performed vs expectations — relative performance, not raw scores
-- Players who emerged as studs or busted based on OVERPERFORMED/BUSTED flags
+- Key strengths and genuine concerns — a team can have multiple weaknesses, call them all out
+- How they performed vs expectations this week — relative performance, not raw scores
+- Players who emerged as studs based on OVERPERFORMED or 30+ POINT GAME flags — only if they scored 15+ points
 - Position imbalances that could lead to trades
 - One sharp closer — punchy, forward-looking, fits the team
 
@@ -119,9 +121,8 @@ Rules:
 - Use nickname only, never team name
 - CRITICAL: Only reference players listed in the roster section with their correct team affiliations
 - Players marked [STARTER] actually played — focus on them
-- Players marked [BENCH] did not start — only mention if OVERPERFORMED significantly
+- Players marked [BENCH] did not start — only mention if they scored 15+ points AND significantly beat their projection. Do not mention bench players who were projected low and scored low.
 - NEVER reference a backup QB's weekly points unless they are [STARTER]
-- When a player had a 30+ POINT GAME note them as a difference maker
 - Do not make definitive season-long statements from limited data
 - Identify position imbalances as potential trade opportunities
 - Do not repeat personality jokes used in previous weeks — find fresh angles
@@ -149,6 +150,10 @@ ${teamSummaries}`;
 
   const data = await response.json();
   const text = data.content[0].text;
+
+  console.log("Calling Claude for blurbs...");
+  console.log("Claude response status:", response.status);
+  console.log("Claude response:", JSON.stringify(data).slice(0, 300));
 
   try {
     const clean = text.replace(/```json|```/g, "").trim();

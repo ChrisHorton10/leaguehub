@@ -124,15 +124,6 @@ export default async function Home() {
 
     rosterScores[user.username] = lineupScore;
 
-    const formatPlayer = (p: any, isStarter: boolean) => {
-      const proj = `proj:${p.pts_ppr.toFixed(1)}`;
-      const actual = p.actual_pts !== undefined ? ` actual:${p.actual_pts.toFixed(1)}` : '';
-      const exceeded = p.actual_pts !== undefined && p.pts_ppr > 0 && p.actual_pts > p.pts_ppr * 1.2 ? ' (OVERPERFORMED)' : '';
-      const busted = p.actual_pts !== undefined && p.pts_ppr > 10 && p.actual_pts < p.pts_ppr * 0.5 ? ' (BUSTED)' : '';
-      const role = isStarter ? 'STARTER' : 'BENCH';
-      return `[${role}] ${p.full_name} (${p.position}, ${p.team || 'FA'}) ${proj}${actual}${exceeded}${busted}`;
-    };
-
     const formatPlayerForBlurb = (p: any, isStarter: boolean) => {
       const role = isStarter ? 'STARTER' : 'BENCH';
       const exceeded = p.actual_pts !== undefined && p.pts_ppr > 0 && p.actual_pts > p.pts_ppr * 1.2 ? ' (OVERPERFORMED)' : '';
@@ -140,7 +131,7 @@ export default async function Home() {
       const bigGame = p.actual_pts !== undefined && p.actual_pts >= 30 ? ' (30+ POINT GAME)' : '';
       return `[${role}] ${p.full_name} (${p.position}, ${p.team || 'FA'})${exceeded}${busted}${bigGame}`;
     };
-    
+
     rosterPlayers[user.username] = [
       ...allEligibleByProjection
         .filter((p: any) => starterIds.has(p.player_id))
@@ -161,12 +152,12 @@ export default async function Home() {
       username: user.username,
       teamName: user.name || user.username,
       nickname: MANAGER_NICKNAMES[user.username] || user.username,
-starters: allEligibleByProjection
-  .filter((p: any) => starterIds.has(p.player_id))
-  .map((p: any) => formatPlayer(p, true)),
-bench: allEligibleByProjection
-  .filter((p: any) => !starterIds.has(p.player_id))
-  .map((p: any) => formatPlayer(p, false)),
+      starters: allEligibleByProjection
+        .filter((p: any) => starterIds.has(p.player_id))
+        .map((p: any) => formatPlayerForBlurb(p, true)),
+      bench: allEligibleByProjection
+        .filter((p: any) => !starterIds.has(p.player_id))
+        .map((p: any) => formatPlayerForBlurb(p, false)),
       projectedPts,
       actualPts
     });
@@ -209,9 +200,10 @@ bench: allEligibleByProjection
       const claudeScore = claudeScores[username] || 5;
       const actualPts = teamActualPts[username] || 0;
 
+      const championBonus = username === "Broth22" ? 15 : 0;
       const finalScore = IS_OFFSEASON
         ? (rosterScore * 0.7) + (claudeScore * 10 * 0.3)
-        : (points * 0.3) + (wins * 20 * 0.3) + (rosterScore * 0.15) + (claudeScore * 10 * 0.25);
+        : (points * 0.3) + (wins * 20 * 0.3) + (rosterScore * 0.15) + (claudeScore * 10 * 0.25) + championBonus;
 
       return {
         teamName: user?.name || "Unknown",
@@ -226,6 +218,21 @@ bench: allEligibleByProjection
     })
     .sort((a: any, b: any) => b.powerScore - a.powerScore);
 
+  // Fetch weekly notes
+  let weeklyNotes = "";
+  try {
+    const { data: notesData } = await supabase
+      .from("weekly_notes")
+      .select("notes")
+      .eq("week", CURRENT_WEEK)
+      .limit(1);
+    if (notesData && notesData.length > 0) {
+      weeklyNotes = notesData[0].notes;
+    }
+  } catch (e) {
+    console.log("Could not fetch weekly notes", e);
+  }
+
   let blurbs: string[] = [];
   const { data: cachedBlurbs } = await supabase
     .from("blurbs_cache")
@@ -238,7 +245,7 @@ bench: allEligibleByProjection
   if (cachedBlurbs && cachedBlurbs.length > 0) {
     blurbs = JSON.parse(cachedBlurbs[0].blurbs);
   } else {
-    blurbs = await generateTeamBlurbs(rankings, IS_OFFSEASON, CURRENT_WEEK, rosterInjuries, rosterPlayers);
+    blurbs = await generateTeamBlurbs(rankings, IS_OFFSEASON, CURRENT_WEEK, rosterInjuries, rosterPlayers, weeklyNotes);
     await supabase.from("blurbs_cache").insert([{
       week: CURRENT_WEEK,
       is_offseason: IS_OFFSEASON,
@@ -293,6 +300,7 @@ bench: allEligibleByProjection
       loserPlayers: getTopPerformers(loserEntry, loserRoster),
     };
   });
+
   let recaps: string[] = [];
   if (!IS_OFFSEASON) {
     const { data: cachedRecaps } = await supabase
@@ -300,9 +308,9 @@ bench: allEligibleByProjection
       .select("*")
       .eq("week", CURRENT_WEEK)
       .order("matchup_id", { ascending: true });
-      
-      if (cachedRecaps && cachedRecaps.length === games.length) {
-        recaps = cachedRecaps.map((r: any) => r.recap);
+
+    if (cachedRecaps && cachedRecaps.length === games.length) {
+      recaps = cachedRecaps.map((r: any) => r.recap);
     } else {
       recaps = await generateMatchupRecaps(games, CURRENT_WEEK);
       await Promise.all(
@@ -381,7 +389,7 @@ bench: allEligibleByProjection
           </p>
           <h1 className="text-2xl font-bold tracking-tight text-white">League Hub</h1>
           <p className="text-white/40 text-sm mt-1">
-            {IS_OFFSEASON ? "Season hasn't started yet. Check back week 1 for the full breakdown." : `Everything you need to know from week ${CURRENT_WEEK}.`}
+            {IS_OFFSEASON ? "Season hasn't started yet." : `Everything you need to know from week ${CURRENT_WEEK}.`}
           </p>
         </div>
       </div>
@@ -421,7 +429,7 @@ bench: allEligibleByProjection
                       <p className="text-base font-semibold text-white leading-tight">{team.teamName}</p>
                       <p className="text-xs text-white/40 leading-tight mt-0.5">
                         @{team.username} · {team.wins}–{team.losses}
-                        {!IS_OFFSEASON && team.actualPts > 0 && ` · ${team.actualPts.toFixed(1)} pts`}
+                        {!IS_OFFSEASON && team.points > 0 && ` · ${team.points.toFixed(1)} pts`}
                       </p>
                     </div>
                   </div>

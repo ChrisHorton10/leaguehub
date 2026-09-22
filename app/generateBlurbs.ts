@@ -86,11 +86,9 @@ ${injuryNote}`;
   const styleExamples = `
 STYLE EXAMPLES — write in this voice:
 
-"Brothers — Reigning champ, still running the league like a pro. His team is legit — he has got all the pieces to strike again. But lets be honest, hes whipped harder than anyone in this league and outside of fantasy hes really only good at following instructions. Respect the team though."
+"Brothers — I mean if we are being real this team is on autopilot because all Brothers' time is spent at the theater supporting the head honcho of the relationship. Even on autopilot though, this team continues to dominate with massive point explosions every week behind monster RBs in Henry and Taylor and JSN looking like Randy Moss. I would give you your flowers but you need those for Gaby." 
 
-"Dlugos — Browns fan so cursed already. Russia is back and more dangerous than ever after acquiring Saquon. His brother already has the lineup set through Week 10. 13-1 last year and still couldn't close — at some point the psycho GM energy has to translate."
-
-"Shaz — While his time in the US might be limited, Shaz continues to show why he is a major threat to security. The dude just puts up points every week with Bijan and Jamarr doing damage."
+"Shaz — Shaz had to lay low last week considering the time of the year which is probably why is his team underperformed so much in his matchup against Dlugos. Purdy is looking different and Jamarr is continuing to make Sherlock second guess the breakup but with Bijan and London on an offense led by the local make a wish kid, this team is going to continue having stale weeks and continue losing if he cannot shore up that flex spot. He just needs volunteers! He needs a flex spot for pakistannnn."
 
 "Cregg — Dr. Raymond is looking more dangerous than he does on the road after a few drinks. But the best drunk driver on this side of the Mississippi is proving to everyone that not only can he get you to McDonald's at 3am without a scratch, but his team is heading towards a championship run. Josh Allen, Amon-Ra, and Kenneth Walker is the most dangerous offensive trio in the league. Keep drinking those surfsides Cregg, your team trusts you at the wheel."
 `;

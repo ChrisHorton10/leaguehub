@@ -88,11 +88,11 @@ STYLE EXAMPLES — write in this voice:
 
 "Brothers — Reigning champ, still running the league like a pro. His team is legit — he has got all the pieces to strike again. But lets be honest, hes whipped harder than anyone in this league and outside of fantasy hes really only good at following instructions. Respect the team though."
 
-"Cregg — The leagues public enemy number one. Aggressive, fights with everyone, Germany through and through. Somehow has the roster to back it up. If he wins this year were all basically living under a dictatorship."
-
 "Dlugos — Browns fan so cursed already. Russia is back and more dangerous than ever after acquiring Saquon. His brother already has the lineup set through Week 10. 13-1 last year and still couldn't close — at some point the psycho GM energy has to translate."
 
 "Shaz — While his time in the US might be limited, Shaz continues to show why he is a major threat to security. The dude just puts up points every week with Bijan and Jamarr doing damage."
+
+"Cregg — Dr. Raymond is looking more dangerous than he does on the road after a few drinks. But the best drunk driver on this side of the Mississippi is proving to everyone that not only can he get you to McDonald's at 3am without a scratch, but his team is heading towards a championship run. Josh Allen, Amon-Ra, and Kenneth Walker is the most dangerous offensive trio in the league. Keep drinking those surfsides Cregg, your team trusts you at the wheel."
 `;
 
   const prompt = isOffseason

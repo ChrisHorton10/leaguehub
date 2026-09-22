@@ -300,9 +300,9 @@ bench: allEligibleByProjection
       .select("*")
       .eq("week", CURRENT_WEEK)
       .order("matchup_id", { ascending: true });
-
-    if (cachedRecaps && cachedRecaps.length > 0) {
-      recaps = cachedRecaps.map((r: any) => r.recap);
+      
+      if (cachedRecaps && cachedRecaps.length === games.length) {
+        recaps = cachedRecaps.map((r: any) => r.recap);
     } else {
       recaps = await generateMatchupRecaps(games, CURRENT_WEEK);
       await Promise.all(

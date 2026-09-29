@@ -56,15 +56,15 @@ const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = 
   },
   "SamHuman12": {
     nickname: "Sam",
-    context: "Bears fan who roots for every Clemson player in the NFL. Pessimistic by nature — especially about Clemson every year. Cade Klubnik just entered the NFL on the Jets — only reference this once across the season. Active trader who tends to win his trades."
+    context: "Bears fan who roots for every Clemson player in the NFL. Pessimistic by nature — especially about Clemson every year. Active trader who tends to win his trades. Do not reference Cade Klubnik or the Jets — that joke has been used already."
   },
   "Gillilig": {
     nickname: "Gill",
-    context: "Bears fan in Chicago but gets called a bandwagon — roots for Duke, OSU, and the Bears. Obsessed with Caleb Williams succeeding. Big into Rocket League and hunting for a Caleb Williams sports card one of one. Has multiple starting-caliber QBs — the weekly decision of who to start is the interesting storyline. In golf the front nine looks great but the back nine is always a disaster."
+    context: "Bears fan in Chicago but gets called a bandwagon — roots for Duke, OSU, and the Bears. Obsessed with Caleb Williams succeeding. Big into Rocket League and hunting for a Caleb Williams sports card one of one. Has multiple starting-caliber QBs — the weekly decision of who to start is the interesting storyline."
   }
 };
 
-export async function generateTeamBlurbs(rankings: any[], isOffseason: boolean, week: number, rosterInjuries: any = {}, rosterPlayers: any = {}, weeklyNotes: string = "") {
+export async function generateTeamBlurbs(rankings: any[], isOffseason: boolean, week: number, rosterInjuries: any = {}, rosterPlayers: any = {}, weeklyNotes: string = "", lastWeekBlurbs: string[] = []) {
   const teamSummaries = rankings.map((team, index) => {
     const persona = (MANAGER_PERSONAS as any)[team.username];
     const nickname = persona?.nickname || team.username;
@@ -78,6 +78,7 @@ export async function generateTeamBlurbs(rankings: any[], isOffseason: boolean, 
 Record: ${team.wins}-${team.losses} | Season points: ${team.points.toFixed(1)} | Week ${week} actual: ${team.actualPts ? team.actualPts.toFixed(1) : 'N/A'}
 Last year finish: #${lastYearFinish}
 Manager context: ${context}
+CRITICAL: The following is the ONLY list of players on this team. Do not reference any player not on this list.
 Roster ([STARTER] played this week, [BENCH] did not. OVERPERFORMED = beat projection by 20%+. BUSTED = missed projection by 50%+. 30+ POINT GAME = elite performance):
 ${players.slice(0, 12).join("\n")}
 ${injuryNote}`;
@@ -88,7 +89,7 @@ STYLE EXAMPLES — this is the exact voice to match. Personal, specific, commits
 
 "Brothers — I mean if we are being real this team is on autopilot because all Brothers' time is spent at the theater supporting the head honcho of the relationship. Even on autopilot though, this team continues to dominate with massive point explosions every week behind monster RBs in Henry and Taylor and JSN looking like Randy Moss. I would give you your flowers but you need those for Gabby."
 
-"Shaz — Shaz had to lay low last week considering the time of the year which is probably why his team underperformed so much. Purdy is looking different and Jamarr is continuing to make Sherlock second guess the breakup but with Bijan and London on an offense led by the local make a wish kid, this team is going to continue having stale weeks if he cannot shore up that flex spot. He just needs volunteers for Pakistan!"
+"Shaz — Purdy dropped a 30+ point game and Bijan Robinson looked like an absolute monster, which is exactly what this team needs to stay dangerous. Ja'Marr Chase and Drake London both outperformed, meaning Shaz had four studs firing on the same week — that does not happen every Sunday. The concern here is the flex position still, with the Packers being genuinely bad this year and Brian Thomas continuing to underperform, the flex spot will be the thing that makes or breaks this team. Mark Andrews busted and is questionable moving forward, so that TE situation needs monitoring. We will see if the floor continues to hold strong or if it all comes crashing down like the ball cleaner he ran over this past weekend. Fuck the Brewers."
 
 "Cregg — Dr. Raymond is looking more dangerous than he does on the road after a few drinks. But the best drunk driver on this side of the Mississippi is proving to everyone that not only can he get you to McDonald's at 3am without a scratch, but his team is heading towards a championship run. Josh Allen, Amon-Ra, and Kenneth Walker is the most dangerous offensive trio in the league. Keep drinking those surfsides Cregg, your team trusts you at the wheel."
 `;
@@ -97,9 +98,10 @@ STYLE EXAMPLES — this is the exact voice to match. Personal, specific, commits
 
 ${styleExamples}
 
-CRITICAL STYLE NOTE: The examples above are the exact voice to match. They are personal, specific to these guys, and commit fully to the bit. Do not water it down. Do not be generic. Write like you know everyone in this league personally and are not afraid to say exactly what everyone is thinking. If the joke is there, commit to it. If it is not there, write sharp honest analysis instead of filler.
+CRITICAL STYLE NOTE: The examples above are the exact voice to match. These blurbs should feel like they were written by someone who knows every person in this league personally and has zero filter. Commit fully to the bit. If the joke is obvious, make it. If the analysis is uncomfortable, say it anyway. Do not soften anything. The best blurbs make people laugh and wince at the same time.
 
 ${weeklyNotes ? `WEEKLY CONTEXT — use these timely notes to add relevant jokes and references this week:\n${weeklyNotes}\n` : ''}
+${lastWeekBlurbs.length > 0 ? `LAST WEEK'S BLURBS — do not repeat any jokes, references, or observations already used:\n${lastWeekBlurbs.join("\n\n")}\n` : ''}
 
 These are POWER RANKINGS — not game recaps. The matchup recaps handle score breakdowns. Your job is big picture analysis with personality.
 
@@ -121,20 +123,17 @@ Rules:
 - Use nickname only, never team name
 - CRITICAL: Only reference players listed in the roster section with their correct team affiliations
 - Players marked [STARTER] actually played this week — this IS the starting lineup. Never say a team lacks a starter at a position if a player at that position is marked [STARTER].
-- Players marked [BENCH] did not start — only mention if they scored 15+ points AND significantly beat their projection. Do not mention bench players who were projected low and scored low.
+- Players marked [BENCH] did not start — only mention if they scored 15+ points AND significantly beat their projection
 - NEVER reference a backup QB's weekly points unless they are [STARTER]
-- Do not make definitive season-long statements from limited data — one bad week from a top 10 player is noise, not a trend
-- Do not suggest a top tier player is underperforming or might not be the guy based on one or two weeks
-- Only mention total season points when it tells a meaningful story (e.g. a team that is 0-2 but scoring a lot is unlucky, worth noting)
-- Do not recite total points scored for every team — only use it when it adds to the narrative
+- Do not make definitive season-long statements from limited data — one bad week from a top 10 player is noise not a trend
+- Do not suggest a top tier player is underperforming based on one or two weeks
+- Only mention total season points when it tells a meaningful story
 - Identify position imbalances as potential trade opportunities
-- Do not repeat personality jokes used in previous weeks — find fresh angles
+- Do not repeat any joke, reference, or observation from last week's blurbs
 - Do not joke about anyone's physique or appearance
-- One personality observation per blurb max — analysis comes first
+- CRITICAL: Always write records as numerals: "2-0" "1-1" never "two and oh" or spelled out
 - 5-6 sentences, 100-130 words
 - Return ONLY a valid JSON array of strings in order. No markdown, no extra text.
-- When referencing records write them as "2-0" or "1-1" not "two and oh" or spelled out
-- The Cade Klubnik/Jets reference for Sam has already been used — do not repeat it.
 
 Teams:
 ${teamSummaries}`;
@@ -155,10 +154,6 @@ ${teamSummaries}`;
 
   const data = await response.json();
   const text = data.content[0].text;
-
-  console.log("Calling Claude for blurbs...");
-  console.log("Claude response status:", response.status);
-  console.log("Claude response:", JSON.stringify(data).slice(0, 300));
 
   try {
     const clean = text.replace(/```json|```/g, "").trim();

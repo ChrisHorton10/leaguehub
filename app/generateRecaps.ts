@@ -24,6 +24,7 @@ Write a 3-4 sentence recap for each matchup. These are post-game score reports â
 - 2-3 standout performers by name from the winning team who made the difference
 - Anyone who massively underperformed or busted on the losing side
 - One line on what this result means for each team's record going forward
+- Do NOT state win-loss records in the recaps â€” those belong in the power rankings. Just describe the game result.
 
 Use manager nicknames not team names. Be sharp and specific with player names and performances.
 

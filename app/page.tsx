@@ -217,6 +217,21 @@ export default async function Home() {
       };
     })
     .sort((a: any, b: any) => b.powerScore - a.powerScore);
+    // Fetch last week's blurbs to prevent joke recycling
+let lastWeekBlurbs: string[] = [];
+try {
+  const { data: lastWeekBlurbData } = await supabase
+    .from("blurbs_cache")
+    .select("blurbs")
+    .eq("week", CURRENT_WEEK - 1)
+    .eq("is_offseason", false)
+    .limit(1);
+  if (lastWeekBlurbData && lastWeekBlurbData.length > 0) {
+    lastWeekBlurbs = JSON.parse(lastWeekBlurbData[0].blurbs);
+  }
+} catch (e) {
+  console.log("Could not fetch last week blurbs", e);
+}
 
   // Fetch weekly notes
   let weeklyNotes = "";
@@ -245,7 +260,7 @@ export default async function Home() {
   if (cachedBlurbs && cachedBlurbs.length > 0) {
     blurbs = JSON.parse(cachedBlurbs[0].blurbs);
   } else {
-    blurbs = await generateTeamBlurbs(rankings, IS_OFFSEASON, CURRENT_WEEK, rosterInjuries, rosterPlayers, weeklyNotes);
+    blurbs = await generateTeamBlurbs(rankings, IS_OFFSEASON, CURRENT_WEEK, rosterInjuries, rosterPlayers, weeklyNotes, lastWeekBlurbs);
     await supabase.from("blurbs_cache").insert([{
       week: CURRENT_WEEK,
       is_offseason: IS_OFFSEASON,
@@ -355,7 +370,7 @@ export default async function Home() {
   }
 
   let hotColdData = { hot: [] as any[], cold: [] as any[] };
-  if (!IS_OFFSEASON && CURRENT_WEEK >= 3) {
+  if (!IS_OFFSEASON) {
     try {
       await saveWeeklyStats(supabase, CURRENT_WEEK, matchups, allPlayers, weekStats);
       hotColdData = await getHotColdPlayers(supabase, CURRENT_WEEK);

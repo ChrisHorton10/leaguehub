@@ -16,7 +16,7 @@ export async function saveWeeklyStats(supabase: any, week: number, matchups: any
       const stats = weekStats[id];
       if (!player || !stats || !["QB", "RB", "WR", "TE"].includes(player.position)) return;
   
-      const actual = stats.pts_ppr || stats.pts_half_ppr || stats.pts_std || 0;
+      const actual = stats.pts_ppr || 0;
       const projected = stats.proj_pts_ppr || stats.proj_pts_half_ppr || stats.proj_pts_std || 0;
   
       rows.push({
@@ -42,7 +42,8 @@ export async function saveWeeklyStats(supabase: any, week: number, matchups: any
     const { data: stats } = await supabase
       .from("player_weekly_stats")
       .select("*")
-      .in("week", weeksToCheck);
+      .in("week", weeksToCheck)
+      .gte("projected_pts", 8);
   
     if (!stats || stats.length === 0) return { hot: [], cold: [] };
   
@@ -70,15 +71,26 @@ export async function saveWeeklyStats(supabase: any, week: number, matchups: any
       return { ...p, avgDiff, avgActual };
     });
   
-    const hot = withAvg
-      .filter((p: any) => p.avgDiff > 0)
-      .sort((a: any, b: any) => b.avgDiff - a.avgDiff)
-      .slice(0, 5);
+    const positions = ["QB", "RB", "WR", "TE"];
+    const hot: any[] = [];
+    const cold: any[] = [];
   
-    const cold = withAvg
-      .filter((p: any) => p.avgDiff < 0)
-      .sort((a: any, b: any) => a.avgDiff - b.avgDiff)
-      .slice(0, 5);
+    positions.forEach(pos => {
+      const posPlayers = withAvg.filter((p: any) => p.position === pos);
+  
+      const hotPos = posPlayers
+        .filter((p: any) => p.avgDiff > 0)
+        .sort((a: any, b: any) => b.avgDiff - a.avgDiff)
+        .slice(0, 2);
+  
+      const coldPos = posPlayers
+        .filter((p: any) => p.avgDiff < 0)
+        .sort((a: any, b: any) => a.avgDiff - b.avgDiff)
+        .slice(0, 2);
+  
+      hot.push(...hotPos);
+      cold.push(...coldPos);
+    });
   
     return { hot, cold };
   }

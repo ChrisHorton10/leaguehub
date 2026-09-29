@@ -43,7 +43,7 @@ export async function saveWeeklyStats(supabase: any, week: number, matchups: any
       .from("player_weekly_stats")
       .select("*")
       .in("week", weeksToCheck)
-      .gte("projected_pts", 8);
+      .gte("actual_pts", 5);
   
     if (!stats || stats.length === 0) return { hot: [], cold: [] };
   
@@ -63,7 +63,9 @@ export async function saveWeeklyStats(supabase: any, week: number, matchups: any
       });
     });
   
-    const qualified = Object.values(playerMap).filter((p: any) => p.weeks.length === 3);
+    const qualified = Object.values(playerMap).filter((p: any) =>
+      p.weeks.length === 3 && p.weeks.every((w: any) => w.actual >= 8)
+    );
   
     const withAvg = qualified.map((p: any) => {
       const avgDiff = p.weeks.reduce((sum: number, w: any) => sum + w.diff, 0) / p.weeks.length;

@@ -49,23 +49,34 @@ export async function saveWeeklyStats(supabase: any, week: number, matchups: any
   
     const playerMap: any = {};
     stats.forEach((row: any) => {
-      if (!playerMap[row.player_id]) {
-        playerMap[row.player_id] = {
-          name: row.player_name,
-          position: row.position,
-          weeks: []
+        if (!playerMap[row.player_id]) {
+          playerMap[row.player_id] = {
+            name: row.player_name,
+            position: row.position,
+            weekMap: {}
+          };
+        }
+        // Only keep one entry per week (latest)
+        playerMap[row.player_id].weekMap[row.week] = {
+          actual: row.actual_pts,
+          projected: row.projected_pts,
+          diff: row.actual_pts - row.projected_pts
         };
-      }
-      playerMap[row.player_id].weeks.push({
-        actual: row.actual_pts,
-        projected: row.projected_pts,
-        diff: row.actual_pts - row.projected_pts
       });
-    });
-  
-    const qualified = Object.values(playerMap).filter((p: any) =>
-      p.weeks.length === 3 && p.weeks.every((w: any) => w.actual >= 8)
-    );
+    
+      // Convert weekMap to weeks array
+      Object.values(playerMap).forEach((p: any) => {
+        p.weeks = Object.values(p.weekMap);
+      });
+    
+      const qualified = Object.values(playerMap).filter((p: any) =>
+        p.weeks.length >= 3 && p.weeks.every((w: any) => w.actual >= 8)
+      );
+      
+      console.log("Total players in map:", Object.keys(playerMap).length);
+      console.log("Qualified players:", qualified.length);
+      const jsnCheck = playerMap["9488"];
+      console.log("JSN data:", JSON.stringify(jsnCheck));
   
     const positionThresholds: any = {
         QB: 18,

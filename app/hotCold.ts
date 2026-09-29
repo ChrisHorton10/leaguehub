@@ -67,32 +67,40 @@ export async function saveWeeklyStats(supabase: any, week: number, matchups: any
       p.weeks.length === 3 && p.weeks.every((w: any) => w.actual >= 8)
     );
   
-    const withAvg = qualified.map((p: any) => {
-      const avgDiff = p.weeks.reduce((sum: number, w: any) => sum + w.diff, 0) / p.weeks.length;
-      const avgActual = p.weeks.reduce((sum: number, w: any) => sum + w.actual, 0) / p.weeks.length;
-      return { ...p, avgDiff, avgActual };
-    });
-  
-    const positions = ["QB", "RB", "WR", "TE"];
-    const hot: any[] = [];
-    const cold: any[] = [];
-  
-    positions.forEach(pos => {
-      const posPlayers = withAvg.filter((p: any) => p.position === pos);
-  
-      const hotPos = posPlayers
-        .filter((p: any) => p.avgDiff > 0)
-        .sort((a: any, b: any) => b.avgDiff - a.avgDiff)
-        .slice(0, 2);
-  
-      const coldPos = posPlayers
-        .filter((p: any) => p.avgDiff < 0)
-        .sort((a: any, b: any) => a.avgDiff - b.avgDiff)
-        .slice(0, 2);
-  
-      hot.push(...hotPos);
-      cold.push(...coldPos);
-    });
+    const positionThresholds: any = {
+        QB: 18,
+        RB: 12,
+        WR: 12,
+        TE: 10
+      };
+    
+      const withAvg = qualified.map((p: any) => {
+        const avgActual = p.weeks.reduce((sum: number, w: any) => sum + w.actual, 0) / p.weeks.length;
+        const threshold = positionThresholds[p.position] || 10;
+        const avgDiff = avgActual - threshold;
+        return { ...p, avgDiff, avgActual };
+      });
+    
+      const positions = ["QB", "RB", "WR", "TE"];
+      const hot: any[] = [];
+      const cold: any[] = [];
+    
+      positions.forEach(pos => {
+        const posPlayers = withAvg.filter((p: any) => p.position === pos);
+    
+        const hotPos = posPlayers
+          .filter((p: any) => p.avgDiff > 0)
+          .sort((a: any, b: any) => b.avgDiff - a.avgDiff)
+          .slice(0, 2);
+    
+        const coldPos = posPlayers
+          .filter((p: any) => p.avgDiff < 0)
+          .sort((a: any, b: any) => a.avgDiff - b.avgDiff)
+          .slice(0, 2);
+    
+        hot.push(...hotPos);
+        cold.push(...coldPos);
+      });
   
     return { hot, cold };
   }

@@ -16,51 +16,51 @@ export const LAST_YEAR_FINISH: Record<string, number> = {
 const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = {
   "chrishorton10": {
     nickname: "Commish",
-    context: "Commissioner. Cowboys die-hard with delusional annual confidence — has been saying the Cowboys are going to turn it around for 15 years. Loves to gamble. Lead with roster analysis — Cowboys blind faith as the closer only if it fits naturally."
+    context: "Commissioner. Cowboys die-hard — has been saying the Cowboys are going to turn it around for 15 years. Loves to gamble. Bowers and Olave are the engines of this team."
   },
   "BCregg": {
     nickname: "Cregg",
-    context: "Giants fan, Syracuse fan, Buffalo Sabres fan, Yankees fan. Gets into arguments when drunk. Big hockey and video game guy. Known as Germany — only if genuinely fresh angle. Got pushed out as manager of the league softball team lineup. Loves to gamble. RB depth is a real concern past his top options."
+    context: "Giants fan, Sabres fan, Yankees fan. Starts arguments when drunk. Big hockey guy. Got pushed out as lineup manager of the league softball team. Loves to gamble. Germany nickname — only if genuinely fresh. Amon-Ra and Tee Higgins coming back will change this team's ceiling."
   },
   "ScubaSteve0709": {
     nickname: "Scuba Steve",
-    context: "Bengals and Saints fan. Purdue Boilermakers fan. Recently engaged — keep any reference positive or neutral, no marriage jokes. Lives in Cincinnati. RB room past his top back is a real weakness. Do not mention JJ McCarthy."
+    context: "Bengals and Saints fan. Purdue fan. Recently engaged. Lives in Cincinnati. RB room is a disaster. 0-5 but averaging over 118 points a game — the most snake-bitten team in the league."
   },
   "kmyers": {
     nickname: "Kyle",
-    context: "Browns and Nebraska fan — two historically painful fanbases. Hungarian and makes sure people know it. Drives a Tesla. Has been a trade pinata historically. Lovable guy. RB room is the real weakness on this team. In golf he launches the ball but it rarely goes straight and struggles with the wedge."
+    context: "Browns and Nebraska fan. Hungarian. Drives a Tesla. Trade pinata historically. RB room is the real weakness. In golf launches it far but never straight, terrible with the wedge."
   },
   "Sher2Lose": {
     nickname: "Sherlock",
-    context: "Bengals fan. Short. Always late to everything — do not use being late as a fantasy metaphor. Has real money on Bengals player outcomes. Known as France — only if genuinely fresh angle. Actively and intentionally tanking for the number one pick — deliberate strategy. Has draft capital and young pieces to build around."
+    context: "Bengals fan. Short. Late to everything — do not use as fantasy metaphor. Has money on Bengals outcomes. France nickname — only if fresh. Deliberately tanking for the number one pick. Has young pieces and draft capital to build around."
   },
   "Broth22": {
     nickname: "Brothers",
-    context: "Back to back league champion. Clueless sometimes but keeps winning. Does not trade much. Whipped by his girlfriend Gabby but nobody holds it against him. The most dangerous boring team in the league."
+    context: "Back to back champion. Clueless sometimes but keeps winning. Does not trade much. Whipped by girlfriend Gabby. The most dangerous boring team in the league."
   },
   "shazman123": {
     nickname: "Shaz",
-    context: "Pakistani, lives in Milwaukee. Packers fan. One of the few minority friends in the group. Security threat and TSA jokes work if genuinely fresh — commit to the bit or skip it entirely. Boom or bust nature of some of his players is a recurring theme."
+    context: "Pakistani, lives in Milwaukee. Packers fan. One of the few minority friends in the group. TSA and security threat jokes work if genuinely fresh. Boom or bust nature of some players is a recurring theme."
   },
   "ctracewell": {
     nickname: "Tracewell",
-    context: "Browns and OSU fan. Does DJ sets on the side — gentle ribbing only. Moved to NYC a while back. Actively tanking for the number one pick. Do not mention his girlfriend. Roster is thin and getting thinner."
+    context: "Browns and OSU fan. DJs on the side. Lives in NYC. Actively tanking. Roster is a middle school waiver wire. Do not mention his girlfriend."
   },
   "GrimaceHugeSack": {
     nickname: "Grimace",
-    context: "Packers and Michigan fan. Just moved to Milwaukee for a new job. Low drama, builds quietly. QB situation is a major concern AND WR room is thin. Do not hype Jayden Reed or Xavier Worthy as difference makers. Carried entirely by his RB room — Gibbs and Jeanty are doing heroic work."
+    context: "Packers and Michigan fan. Just moved to Milwaukee. Carried entirely by Gibbs and Jeanty. QB and WR room are both genuine problems. Do not hype Reed or Worthy."
   },
   "Bdug14": {
     nickname: "Dlugos",
-    context: "Browns and OSU fan. Always talking about going to the gym — joke about him constantly bringing it up, never about his actual physique or muscles. League villain energy. 13-1 last year but lost in semis. His brother helps run the team — league inside joke. Recently acquired Saquon Barkley. Known as Russia — only if genuinely fresh angle, do not repeat old lines."
+    context: "Browns and OSU fan. Constantly talks about the gym — joke about bringing it up, never about his physique. League villain. 13-1 last year, lost in semis. Brother runs the team — inside joke. Has Saquon Barkley. Russia nickname — only if fresh, do not repeat old lines."
   },
   "SamHuman12": {
     nickname: "Sam",
-    context: "Bears fan who roots for every Clemson player in the NFL. Pessimistic by nature — especially about Clemson every year. Active trader who sometimes wins and sometimes loses. Currently in no man's land — not bad enough to tank, not good enough to contend. Do not reference Cade Klubnik or the Jets — that joke has been used."
+    context: "Bears fan who roots for every Clemson player. Pessimistic by nature about Clemson every year. Active trader. 3-2 but roster has real depth concerns. Do not reference Klubnik or the Jets — already used."
   },
   "Gillilig": {
     nickname: "Gill",
-    context: "Bears fan in Chicago but gets called a bandwagon — roots for Duke, OSU, and the Bears. Obsessed with Caleb Williams succeeding. Big into Rocket League and hunting for a Caleb Williams sports card one of one. Has multiple starting-caliber QBs — the weekly decision of who to start is the interesting storyline. CMC coming back is the reset button for this team."
+    context: "Bears fan, bandwagon — roots for Duke, OSU, Bears. Obsessed with Caleb Williams. Into Rocket League and hunting a Caleb Williams one of one. Multiple QBs — weekly decision is the storyline. CMC back is the reset button."
   }
 };
 
@@ -78,14 +78,14 @@ export async function generateTeamBlurbs(rankings: any[], isOffseason: boolean, 
 Record: ${team.wins}-${team.losses} | Season points: ${team.points.toFixed(1)} | Week ${week} actual: ${team.actualPts ? team.actualPts.toFixed(1) : 'N/A'}
 Last year finish: #${lastYearFinish}
 Manager context: ${context}
-CRITICAL: The following is the ONLY list of players on this team. Do not reference any player not on this list.
-Roster ([STARTER] played this week, [BENCH] did not. OVERPERFORMED = beat projection by 20%+. BUSTED = missed projection by 50%+. 30+ POINT GAME = elite performance):
+CRITICAL: Only reference players on this list. Do not add players from your own knowledge.
+Roster ([STARTER] = played this week, [BENCH] = did not. OVERPERFORMED = beat projection 20%+. BUSTED = missed projection 50%+. 30+ POINT GAME = elite):
 ${players.slice(0, 12).join("\n")}
 ${injuryNote}`;
   }).join("\n\n");
 
   const styleExamples = `
-STYLE EXAMPLES — this is the exact voice to match. Personal, specific, commits to the bit. Edge comes from specificity and truth, not forced jokes:
+VOICE EXAMPLES — match this exactly. Sharp, personal, commits to the bit. Edge comes from truth not forced jokes:
 
 "Brothers — Lost his ID after going perfect last week and somehow that was the most stressful part of his week because this team is on full autopilot. Henry and Taylor are the most punishing RB room in the league and it is not close, Kittle is quietly becoming the best TE in this format, and Chuba Hubbard giving you a bonus week off the bench is the kind of depth that wins championships in January. 4-0 with Wilson and Tuten still on the bench. The most dangerous boring team in the league."
 
@@ -96,47 +96,43 @@ STYLE EXAMPLES — this is the exact voice to match. Personal, specific, commits
 "Gill — This team is a collection of guys with enormous upside who keep finding new ways to disappoint, kind of like a Caleb Williams one of one that keeps losing value every time he gets carted off the field. CMC coming back is the reset button — if he stays healthy this team has a real second half of the season."
 
 "Tracewell — 0-4 and just traded away Aaron Jones, his last viable running back, leaving behind what is essentially a roster you would find on a middle school waiver wire. The DJ sets in NYC are getting more action than this lineup right now and at least the music is good. The number one pick is the destination, Tracewell is fully committed whether he meant to be or not, and somewhere in NYC a playlist is already being built for the draft party."
+
+"Dlugos — Put up a massive week even with Barkley on the shelf again, which is either a sign of incredible roster depth or proof that his brother has figured out something the rest of the league has not. The entire Rams offense through Puka, Davante, and Kyren is a working plan, Javonte is becoming a red zone touchdown machine in Dallas, and Trey McBride is being fed 15 targets a game like a PPR god who did nothing to deserve this kind of volume. The gym talk is ramping up, the brother is working overtime, and the injury bug is the only thing standing between this roster and a championship conversation."
 `;
 
-  const prompt = `You are writing the week ${week} power rankings for the Chiraq Dynasty League — a 12-team dynasty league of close friends who love football, trash talk, and giving each other hell.
+  const prompt = `You are writing the week ${week} power rankings for the Chiraq Dynasty League — a 12-team dynasty league of close friends who trash talk each other constantly and have zero filter.
 
 ${styleExamples}
 
-CRITICAL STYLE NOTE: Match this voice exactly. Edge and humor come from specific, true observations — not forced jokes. The best lines make people laugh because they are accurate, not because they are trying to be funny. Commit fully to every observation. If it is uncomfortable, say it anyway. Do not soften anything.
+MATCH THIS VOICE EXACTLY. These are close friends. The humor is specific, personal, and sometimes uncomfortable. This group does hockey chirping humor, racial jokes that work because they come from within the group, and specific references to things happening in their lives. Do not water it down. Do not be generic. If the observation is true and funny, say it. The best lines land because they are accurate.
 
-${weeklyNotes ? `WEEKLY CONTEXT — use these timely notes for relevant jokes and references:\n${weeklyNotes}\n` : ''}
-${lastWeekBlurbs.length > 0 ? `LAST WEEK'S BLURBS — do not repeat any joke, reference, or observation already used. Find completely fresh angles:\n${lastWeekBlurbs.join("\n\n")}\n` : ''}
+${weeklyNotes ? `WEEKLY CONTEXT:\n${weeklyNotes}\n` : ''}
+${lastWeekBlurbs.length > 0 ? `LAST WEEK — do not repeat any joke, angle, or observation from these:\n${lastWeekBlurbs.join("\n\n")}\n` : ''}
 
-These are POWER RANKINGS — not game recaps. Big picture analysis with personality. The matchup recaps handle score breakdowns.
+POWER RANKINGS — not recaps. Big picture. Where is this team headed.
 
-For each team cover:
-- Where this team stands and where they are headed
-- CRITICAL: The top 2-3 scorers on this team MUST be mentioned by name — do not skip a player just because they had one bad week
-- Key strengths and genuine concerns — call out multiple weaknesses if they exist
-- Players who have been consistently underperforming week after week should be called out directly — "been a ghost," "hasn't shown up," etc.
-- Do NOT pile on a player for one bad week — one off week from a reliable player is noise, not a trend
-- Position imbalances that could lead to trades
-- One sharp closer that fits the team's situation
+For each team:
+- The top 2-3 scorers MUST be mentioned by name — do not skip a key player
+- Call out players who have been consistently bad for multiple weeks — "been a ghost" "hasn't shown up in weeks" etc
+- Do NOT pile on someone for one bad week — one off week from a reliable player is noise
+- Call out position imbalances as trade opportunities
+- One sharp closer per blurb
 
-Ranking tiers:
-- #1-3: Championship contenders
-- #4-6: Playoff teams with real questions
-- #7-9: Fighting to stay relevant
-- #10-12: Tanking or in trouble
+Tiers:
+- 1-3: Championship level
+- 4-6: Playoff with questions  
+- 7-9: Bubble
+- 10-12: Tanking or in trouble
 
 Rules:
-- Use nickname only, never team name
-- CRITICAL: Only reference players listed in the roster section with their correct team affiliations
-- Players marked [STARTER] actually played — focus on them. Never say a team lacks a starter at a position if one is marked [STARTER]
-- Players marked [BENCH] did not start — only mention if they scored 15+ points AND significantly beat projection
-- NEVER reference a backup QB's weekly points unless they are [STARTER]
-- Do not make definitive statements from one week of data — one bad week is noise
-- Only mention total season points when it adds to the narrative
-- Do not repeat any joke or reference from last week
-- Do not joke about anyone's physique or appearance
-- CRITICAL: Always write records as numerals — "2-0" never "two and oh"
+- Nickname only, never team name
+- Only reference players on the roster list — do not add players from your own knowledge
+- [STARTER] played, [BENCH] did not — never say a team lacks a starter if one is marked [STARTER]
+- [BENCH] players only if 15+ points and significantly beat projection
+- Never reference a backup QB's points unless [STARTER]
+- Records always as numerals: 2-0, never two and oh
 - 5-6 sentences, 100-130 words
-- Return ONLY a valid JSON array of strings in order. No markdown, no extra text.
+- Return ONLY a valid JSON array. No markdown, no extra text.
 
 Teams:
 ${teamSummaries}`;

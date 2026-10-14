@@ -203,7 +203,7 @@ export default async function Home() {
       const championBonus = username === "Broth22" ? 15 : 0;
       const finalScore = IS_OFFSEASON
       ? (rosterScore * 0.7) + (claudeScore * 10 * 0.3)
-      : (points * 0.35) + (wins * 20 * 0.35) + (rosterScore * 0.2) + (claudeScore * 10 * 0.1) + championBonus;
+      : (points * 0.25) + (wins * 20 * 0.45) + (rosterScore * 0.2) + (claudeScore * 10 * 0.1) + championBonus;
 
       return {
         teamName: user?.name || "Unknown",
@@ -218,21 +218,23 @@ export default async function Home() {
     })
     .sort((a: any, b: any) => b.powerScore - a.powerScore);
     // Fetch last week's blurbs to prevent joke recycling
-let lastWeekBlurbs: string[] = [];
-try {
-  const { data: lastWeekBlurbData } = await supabase
-    .from("blurbs_cache")
-    .select("blurbs")
-    .eq("week", CURRENT_WEEK - 1)
-    .eq("is_offseason", false)
-    .limit(1);
-  if (lastWeekBlurbData && lastWeekBlurbData.length > 0) {
-    lastWeekBlurbs = JSON.parse(lastWeekBlurbData[0].blurbs);
-  }
-} catch (e) {
-  console.log("Could not fetch last week blurbs", e);
-}
-
+    let lastWeekBlurbs: string[] = [];
+    try {
+      const { data: recentBlurbData } = await supabase
+        .from("blurbs_cache")
+        .select("blurbs, week")
+        .eq("is_offseason", false)
+        .in("week", [CURRENT_WEEK - 1, CURRENT_WEEK - 2, CURRENT_WEEK - 3])
+        .order("week", { ascending: false });
+      if (recentBlurbData && recentBlurbData.length > 0) {
+        recentBlurbData.forEach((row: any) => {
+          const parsed = JSON.parse(row.blurbs);
+          lastWeekBlurbs = [...lastWeekBlurbs, ...parsed];
+        });
+      }
+    } catch (e) {
+      console.log("Could not fetch recent blurbs", e);
+    }
   // Fetch weekly notes
   let weeklyNotes = "";
   try {

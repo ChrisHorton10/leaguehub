@@ -13,6 +13,8 @@ export const LAST_YEAR_FINISH: Record<string, number> = {
   "Sher2Lose": 12
 };
 
+
+
 const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = {
   "chrishorton10": {
     nickname: "Commish",
@@ -103,11 +105,11 @@ VOICE EXAMPLES — match this exactly. Sharp, personal, commits to the bit. Edge
   const prompt = `You are writing the week ${week} power rankings for the Chiraq Dynasty League — a 12-team dynasty league of close friends who trash talk each other constantly and have zero filter.
 
 ${styleExamples}
-
+CRITICAL: The manager context below is BACKGROUND ONLY. Do not lead with or repeat personality traits that have appeared in recent blurbs. Use the roster data and weekly performance to find fresh angles. Personality is the seasoning, not the meal.
 MATCH THIS VOICE EXACTLY. These are close friends. The humor is specific, personal, and sometimes uncomfortable. This group does hockey chirping humor, racial jokes that work because they come from within the group, and specific references to things happening in their lives. Do not water it down. Do not be generic. If the observation is true and funny, say it. The best lines land because they are accurate.
 
 ${weeklyNotes ? `WEEKLY CONTEXT:\n${weeklyNotes}\n` : ''}
-${lastWeekBlurbs.length > 0 ? `LAST WEEK — do not repeat any joke, angle, or observation from these:\n${lastWeekBlurbs.join("\n\n")}\n` : ''}
+${lastWeekBlurbs.length > 0 ? `RECENT BLURBS (last 3 weeks) — study these carefully. Do not repeat ANY joke, personality reference, or angle that appears here. If Gabby managing Brothers has been used, skip it. If Dlugos gym talk has been used, skip it. If Cregg drunk arguing has been used, skip it. Find completely new angles based on what actually happened this week:\n${lastWeekBlurbs.join("\n\n")}\n` : ''}
 
 POWER RANKINGS — not recaps. Big picture. Where is this team headed.
 

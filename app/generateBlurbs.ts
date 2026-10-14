@@ -156,7 +156,17 @@ ${teamSummaries}`;
 
   try {
     const clean = text.replace(/```json|```/g, "").trim();
-    return JSON.parse(clean);
+    const parsed = JSON.parse(clean);
+    // Handle if Claude returned array of objects instead of strings
+    if (Array.isArray(parsed)) {
+      return parsed.map((item: any) => {
+        if (typeof item === 'string') return item;
+        if (item.blurb) return item.blurb;
+        if (item.text) return item.text;
+        return JSON.stringify(item);
+      });
+    }
+    return rankings.map(() => "Blurb unavailable.");
   } catch (e) {
     console.log("Blurb parse error:", e);
     console.log("Raw text received:", text);

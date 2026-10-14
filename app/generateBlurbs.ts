@@ -16,7 +16,7 @@ export const LAST_YEAR_FINISH: Record<string, number> = {
 const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = {
   "chrishorton10": {
     nickname: "Commish",
-    context: "Commissioner. Cowboys die-hard with delusional annual confidence. Loves to gamble. Lead with roster analysis — Cowboys blind faith as the closer only if it fits naturally."
+    context: "Commissioner. Cowboys die-hard with delusional annual confidence — has been saying the Cowboys are going to turn it around for 15 years. Loves to gamble. Lead with roster analysis — Cowboys blind faith as the closer only if it fits naturally."
   },
   "BCregg": {
     nickname: "Cregg",
@@ -28,27 +28,27 @@ const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = 
   },
   "kmyers": {
     nickname: "Kyle",
-    context: "Browns and Nebraska fan — two historically painful fanbases. Hungarian and makes sure people know it. Drives a Tesla — natural joke works if it fits, do not force it. Has been a trade pinata historically. Lovable guy. RB room is the real weakness on this team. In golf he launches the ball but it rarely goes straight and struggles with the wedge."
+    context: "Browns and Nebraska fan — two historically painful fanbases. Hungarian and makes sure people know it. Drives a Tesla. Has been a trade pinata historically. Lovable guy. RB room is the real weakness on this team. In golf he launches the ball but it rarely goes straight and struggles with the wedge."
   },
   "Sher2Lose": {
     nickname: "Sherlock",
-    context: "Bengals fan. Short. Always late to everything — do not use being late as a fantasy metaphor. Has real money on Bengals player outcomes. Known as France — only if genuinely fresh angle. Actively and intentionally tanking for the number one pick — deliberate strategy."
+    context: "Bengals fan. Short. Always late to everything — do not use being late as a fantasy metaphor. Has real money on Bengals player outcomes. Known as France — only if genuinely fresh angle. Actively and intentionally tanking for the number one pick — deliberate strategy. Has draft capital and young pieces to build around."
   },
   "Broth22": {
     nickname: "Brothers",
-    context: "Back to back league champion. Clueless sometimes but keeps winning. Does not trade much. Whipped by his girlfriend Gabby but nobody holds it against him."
+    context: "Back to back league champion. Clueless sometimes but keeps winning. Does not trade much. Whipped by his girlfriend Gabby but nobody holds it against him. The most dangerous boring team in the league."
   },
   "shazman123": {
     nickname: "Shaz",
-    context: "Pakistani, lives in Milwaukee. Packers fan. One of the few minority friends in the group. Security threat and TSA jokes work if genuinely fresh — commit to the bit or skip it entirely."
+    context: "Pakistani, lives in Milwaukee. Packers fan. One of the few minority friends in the group. Security threat and TSA jokes work if genuinely fresh — commit to the bit or skip it entirely. Boom or bust nature of some of his players is a recurring theme."
   },
   "ctracewell": {
     nickname: "Tracewell",
-    context: "Browns and OSU fan. Does DJ sets on the side — gentle ribbing only. Moved to NYC a while back. Actively tanking for the number one pick. Do not mention his girlfriend."
+    context: "Browns and OSU fan. Does DJ sets on the side — gentle ribbing only. Moved to NYC a while back. Actively tanking for the number one pick. Do not mention his girlfriend. Roster is thin and getting thinner."
   },
   "GrimaceHugeSack": {
     nickname: "Grimace",
-    context: "Packers and Michigan fan. Just moved to Milwaukee for a new job. Low drama, builds quietly. Has multiple weaknesses — QB situation is a major concern AND WR room is thin. Do not hype Jayden Reed or Xavier Worthy as difference makers. Carried by his RB room."
+    context: "Packers and Michigan fan. Just moved to Milwaukee for a new job. Low drama, builds quietly. QB situation is a major concern AND WR room is thin. Do not hype Jayden Reed or Xavier Worthy as difference makers. Carried entirely by his RB room — Gibbs and Jeanty are doing heroic work."
   },
   "Bdug14": {
     nickname: "Dlugos",
@@ -56,11 +56,11 @@ const MANAGER_PERSONAS: Record<string, { nickname: string; context: string }> = 
   },
   "SamHuman12": {
     nickname: "Sam",
-    context: "Bears fan who roots for every Clemson player in the NFL. Pessimistic by nature — especially about Clemson every year. Active trader who tends to win his trades. Do not reference Cade Klubnik or the Jets — that joke has been used already."
+    context: "Bears fan who roots for every Clemson player in the NFL. Pessimistic by nature — especially about Clemson every year. Active trader who sometimes wins and sometimes loses. Currently in no man's land — not bad enough to tank, not good enough to contend. Do not reference Cade Klubnik or the Jets — that joke has been used."
   },
   "Gillilig": {
     nickname: "Gill",
-    context: "Bears fan in Chicago but gets called a bandwagon — roots for Duke, OSU, and the Bears. Obsessed with Caleb Williams succeeding. Big into Rocket League and hunting for a Caleb Williams sports card one of one. Has multiple starting-caliber QBs — the weekly decision of who to start is the interesting storyline."
+    context: "Bears fan in Chicago but gets called a bandwagon — roots for Duke, OSU, and the Bears. Obsessed with Caleb Williams succeeding. Big into Rocket League and hunting for a Caleb Williams sports card one of one. Has multiple starting-caliber QBs — the weekly decision of who to start is the interesting storyline. CMC coming back is the reset button for this team."
   }
 };
 
@@ -85,53 +85,56 @@ ${injuryNote}`;
   }).join("\n\n");
 
   const styleExamples = `
-STYLE EXAMPLES — this is the exact voice to match. Personal, specific, commits to the bit:
+STYLE EXAMPLES — this is the exact voice to match. Personal, specific, commits to the bit. Edge comes from specificity and truth, not forced jokes:
 
-"Brothers — I mean if we are being real this team is on autopilot because all Brothers' time is spent at the theater supporting the head honcho of the relationship. Even on autopilot though, this team continues to dominate with massive point explosions every week behind monster RBs in Henry and Taylor and JSN looking like Randy Moss. I would give you your flowers but you need those for Gabby."
+"Brothers — Lost his ID after going perfect last week and somehow that was the most stressful part of his week because this team is on full autopilot. Henry and Taylor are the most punishing RB room in the league and it is not close, Kittle is quietly becoming the best TE in this format, and Chuba Hubbard giving you a bonus week off the bench is the kind of depth that wins championships in January. 4-0 with Wilson and Tuten still on the bench. The most dangerous boring team in the league."
 
-"Shaz — Purdy dropped a 30+ point game and Bijan Robinson looked like an absolute monster, which is exactly what this team needs to stay dangerous. Ja'Marr Chase and Drake London both outperformed, meaning Shaz had four studs firing on the same week — that does not happen every Sunday. The concern here is the flex position still, with the Packers being genuinely bad this year and Brian Thomas continuing to underperform, the flex spot will be the thing that makes or breaks this team. Mark Andrews busted and is questionable moving forward, so that TE situation needs monitoring. We will see if the floor continues to hold strong or if it all comes crashing down like the ball cleaner he ran over this past weekend. Fuck the Brewers."
+"Cregg — The Yankees season is ending and the Sabres season is just getting started, which is a pretty accurate metaphor for what is happening with Cregg's fantasy team right now. Allen, Amon-Ra, Walker, and Higgins are a top-four core that nobody in this league wants to see across the matchup, and the Aaron Jones addition from the Tracewell fire sale quietly gave this RB room the depth it was missing all season. The Sabres are not the horse to bet on this winter but his fantasy team just might be."
 
-"Cregg — Dr. Raymond is looking more dangerous than he does on the road after a few drinks. But the best drunk driver on this side of the Mississippi is proving to everyone that not only can he get you to McDonald's at 3am without a scratch, but his team is heading towards a championship run. Josh Allen, Amon-Ra, and Kenneth Walker is the most dangerous offensive trio in the league. Keep drinking those surfsides Cregg, your team trusts you at the wheel."
+"Shaz — Bijan, London, and Hockenson are looking like dawgs for the rest of this season and Kyler Murray keeps feeding Hockenson like he is the only receiver on the field, which at this point might actually be true. Chase going down hurts but this team has enough top-end firepower to absorb it if Brian Robinson stops stealing touchdowns from Bijan in the red zone. Montgomery and Doubs remain boom or bust — Shaz loves the boom, and the league is well aware he has a complicated relationship with the other thing that rhymes with it."
+
+"Gill — This team is a collection of guys with enormous upside who keep finding new ways to disappoint, kind of like a Caleb Williams one of one that keeps losing value every time he gets carted off the field. CMC coming back is the reset button — if he stays healthy this team has a real second half of the season."
+
+"Tracewell — 0-4 and just traded away Aaron Jones, his last viable running back, leaving behind what is essentially a roster you would find on a middle school waiver wire. The DJ sets in NYC are getting more action than this lineup right now and at least the music is good. The number one pick is the destination, Tracewell is fully committed whether he meant to be or not, and somewhere in NYC a playlist is already being built for the draft party."
 `;
 
   const prompt = `You are writing the week ${week} power rankings for the Chiraq Dynasty League — a 12-team dynasty league of close friends who love football, trash talk, and giving each other hell.
 
 ${styleExamples}
 
-CRITICAL STYLE NOTE: The examples above are the exact voice to match. These blurbs should feel like they were written by someone who knows every person in this league personally and has zero filter. Commit fully to the bit. If the joke is obvious, make it. If the analysis is uncomfortable, say it anyway. Do not soften anything. The best blurbs make people laugh and wince at the same time.
+CRITICAL STYLE NOTE: Match this voice exactly. Edge and humor come from specific, true observations — not forced jokes. The best lines make people laugh because they are accurate, not because they are trying to be funny. Commit fully to every observation. If it is uncomfortable, say it anyway. Do not soften anything.
 
-${weeklyNotes ? `WEEKLY CONTEXT — use these timely notes to add relevant jokes and references this week:\n${weeklyNotes}\n` : ''}
-${lastWeekBlurbs.length > 0 ? `LAST WEEK'S BLURBS — do not repeat any jokes, references, or observations already used:\n${lastWeekBlurbs.join("\n\n")}\n` : ''}
+${weeklyNotes ? `WEEKLY CONTEXT — use these timely notes for relevant jokes and references:\n${weeklyNotes}\n` : ''}
+${lastWeekBlurbs.length > 0 ? `LAST WEEK'S BLURBS — do not repeat any joke, reference, or observation already used. Find completely fresh angles:\n${lastWeekBlurbs.join("\n\n")}\n` : ''}
 
-These are POWER RANKINGS — not game recaps. The matchup recaps handle score breakdowns. Your job is big picture analysis with personality.
+These are POWER RANKINGS — not game recaps. Big picture analysis with personality. The matchup recaps handle score breakdowns.
 
 For each team cover:
-- Where this team stands right now and where they are headed
-- Key strengths and genuine concerns — a team can have multiple weaknesses, call them all out
-- How they performed vs expectations this week — relative performance, not raw scores
-- Players who emerged as studs based on OVERPERFORMED or 30+ POINT GAME flags — only if they scored 15+ points
+- Where this team stands and where they are headed
+- CRITICAL: The top 2-3 scorers on this team MUST be mentioned by name — do not skip a player just because they had one bad week
+- Key strengths and genuine concerns — call out multiple weaknesses if they exist
+- Players who have been consistently underperforming week after week should be called out directly — "been a ghost," "hasn't shown up," etc.
+- Do NOT pile on a player for one bad week — one off week from a reliable player is noise, not a trend
 - Position imbalances that could lead to trades
-- One sharp closer — punchy, forward-looking, fits the team
+- One sharp closer that fits the team's situation
 
 Ranking tiers:
-- #1-3: Playing like championship contenders
-- #4-6: Playoff teams with questions
+- #1-3: Championship contenders
+- #4-6: Playoff teams with real questions
 - #7-9: Fighting to stay relevant
-- #10-12: In trouble or tanking
+- #10-12: Tanking or in trouble
 
 Rules:
 - Use nickname only, never team name
 - CRITICAL: Only reference players listed in the roster section with their correct team affiliations
-- Players marked [STARTER] actually played this week — this IS the starting lineup. Never say a team lacks a starter at a position if a player at that position is marked [STARTER].
-- Players marked [BENCH] did not start — only mention if they scored 15+ points AND significantly beat their projection
+- Players marked [STARTER] actually played — focus on them. Never say a team lacks a starter at a position if one is marked [STARTER]
+- Players marked [BENCH] did not start — only mention if they scored 15+ points AND significantly beat projection
 - NEVER reference a backup QB's weekly points unless they are [STARTER]
-- Do not make definitive season-long statements from limited data — one bad week from a top 10 player is noise not a trend
-- Do not suggest a top tier player is underperforming based on one or two weeks
-- Only mention total season points when it tells a meaningful story
-- Identify position imbalances as potential trade opportunities
-- Do not repeat any joke, reference, or observation from last week's blurbs
+- Do not make definitive statements from one week of data — one bad week is noise
+- Only mention total season points when it adds to the narrative
+- Do not repeat any joke or reference from last week
 - Do not joke about anyone's physique or appearance
-- CRITICAL: Always write records as numerals: "2-0" "1-1" never "two and oh" or spelled out
+- CRITICAL: Always write records as numerals — "2-0" never "two and oh"
 - 5-6 sentences, 100-130 words
 - Return ONLY a valid JSON array of strings in order. No markdown, no extra text.
 

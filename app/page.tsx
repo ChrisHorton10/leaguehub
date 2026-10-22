@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { generateTeamBlurbs, LAST_YEAR_FINISH } from "./generateBlurbs";
+import { generateTeamBlurbs } from "./generateBlurbs";
 import { generateMatchupRecaps } from "./generateRecaps";
 import { saveWeeklyStats, getHotColdPlayers } from "./hotCold";
 import { getClaudeRosterScores } from "./scoreRosters";
@@ -10,7 +10,7 @@ const supabase = createClient(
 );
 
 const LEAGUE_ID = "1330820695583625216";
-const CURRENT_WEEK = 5;
+const CURRENT_WEEK = 6;
 const IS_OFFSEASON = false;
 
 const MANAGER_NICKNAMES: Record<string, string> = {
@@ -71,6 +71,12 @@ export default async function Home() {
     console.log("Could not fetch player data", e);
   }
 
+  // Each roster's matchup entry for the week: tells us who ACTUALLY started that week and what everyone scored
+  const matchupByRoster: Record<number, any> = {};
+  matchups.forEach((m: any) => {
+    matchupByRoster[m.roster_id] = m;
+  });
+
   const rosterInjuries: Record<string, any[]> = {};
   const rosterPlayers: Record<string, string[]> = {};
   const rosterScores: Record<string, number> = {};
@@ -81,12 +87,20 @@ export default async function Home() {
     const user = userMap[roster.owner_id];
     if (!user) return;
 
-    const actualStarters = (roster.starters || []).map((id: string) => {
+    const myMatchup = matchupByRoster[roster.roster_id];
+    const weekStarterList: string[] = (myMatchup?.starters || roster.starters || []) as string[];
+    const weekStarterIds = new Set<string>(weekStarterList);
+    const weekPoints: Record<string, number> = myMatchup?.players_points || {};
+
+    const getActual = (id: string) => {
+      if (weekPoints[id] !== undefined) return weekPoints[id] as number;
+      return weekStats[id]?.pts_ppr as number | undefined;
+    };
+
+    const actualStarters = weekStarterList.map((id: string) => {
       const player = allPlayers[id];
-      const proj = weekProjections[id];
-      const stat = weekStats[id];
-      const pts = proj?.pts_ppr || 0;
-      const actual = stat?.pts_ppr;
+      const pts = weekProjections[id]?.pts_ppr || 0;
+      const actual = getActual(id);
       if (!player) return { player_id: id, full_name: id, position: "DST", pts_ppr: pts, actual_pts: actual };
       return { ...player, player_id: id, pts_ppr: pts, actual_pts: actual };
     });
@@ -95,50 +109,48 @@ export default async function Home() {
     const actualPts = actualStarters.reduce((sum: number, p: any) => sum + (p.actual_pts || 0), 0);
     teamActualPts[user.username] = actualPts;
 
-    const startingLineup = actualStarters.filter((p: any) =>
-      p.full_name && ["QB", "RB", "WR", "TE"].includes(p.position)
-    );
-
-    const starterIds = new Set(actualStarters.map((p: any) => p.player_id));
     const taxiIds = new Set((roster.taxi || []) as string[]);
     const reserveIds = new Set((roster.reserve || []) as string[]);
 
-    const allEligibleByProjection = (roster.players || [])
+    const eligible = (roster.players || [])
       .filter((id: string) => !taxiIds.has(id) && !reserveIds.has(id))
       .map((id: string) => {
         const player = allPlayers[id];
-        const proj = weekProjections[id];
-        const stat = weekStats[id];
-        return { ...player, player_id: id, pts_ppr: proj?.pts_ppr || 0, actual_pts: stat?.pts_ppr };
+        return {
+          ...player,
+          player_id: id,
+          pts_ppr: weekProjections[id]?.pts_ppr || 0,
+          actual_pts: getActual(id)
+        };
       })
-      .filter((p: any) => p && p.full_name && ["QB", "RB", "WR", "TE"].includes(p.position))
+      .filter((p: any) => p && p.full_name && ["QB", "RB", "WR", "TE"].includes(p.position));
+
+    // Starters first (highest scorers on top), then everyone else by projection
+    const startersSorted = eligible
+      .filter((p: any) => weekStarterIds.has(p.player_id))
+      .sort((a: any, b: any) => (b.actual_pts || 0) - (a.actual_pts || 0));
+    const othersSorted = eligible
+      .filter((p: any) => !weekStarterIds.has(p.player_id))
       .sort((a: any, b: any) => b.pts_ppr - a.pts_ppr)
-      .slice(0, 15);
+      .slice(0, 8);
 
-    const benchPlayers = allEligibleByProjection
-      .filter((p: any) => !starterIds.has(p.player_id))
-      .slice(0, 7);
-
-    const benchScore = benchPlayers.reduce((sum: number, p: any) => sum + (p.pts_ppr || 0), 0);
+    const benchScore = othersSorted.reduce((sum: number, p: any) => sum + (p.pts_ppr || 0), 0);
     const lineupScore = (projectedPts * 0.75) + (benchScore * 0.25);
-
     rosterScores[user.username] = lineupScore;
 
-    const formatPlayerForBlurb = (p: any, isStarter: boolean) => {
-      const role = isStarter ? 'STARTER' : 'BENCH';
-      const exceeded = p.actual_pts !== undefined && p.pts_ppr > 0 && p.actual_pts > p.pts_ppr * 1.2 ? ' (OVERPERFORMED)' : '';
-      const busted = p.actual_pts !== undefined && p.pts_ppr > 10 && p.actual_pts < p.pts_ppr * 0.5 ? ' (BUSTED)' : '';
-      const bigGame = p.actual_pts !== undefined && p.actual_pts >= 30 ? ' (30+ POINT GAME)' : '';
-      return `[${role}] ${p.full_name} (${p.position}, ${p.team || 'FA'})${exceeded}${busted}${bigGame}`;
+    const formatPlayerForBlurb = (p: any, started: boolean) => {
+      const status = started ? "started this week" : "did not start this week";
+      const proj = p.pts_ppr > 0 ? ` | projected ${p.pts_ppr.toFixed(1)}` : "";
+      const actual = p.actual_pts !== undefined ? ` | scored ${p.actual_pts.toFixed(1)}` : "";
+      const injury = p.injury_status && ["Out", "IR", "Doubtful", "Questionable"].includes(p.injury_status)
+        ? ` | CURRENT injury status: ${p.injury_status}`
+        : "";
+      return `${p.full_name} (${p.position}, ${p.team || "FA"}) | ${status}${proj}${actual}${injury}`;
     };
 
     rosterPlayers[user.username] = [
-      ...allEligibleByProjection
-        .filter((p: any) => starterIds.has(p.player_id))
-        .map((p: any) => formatPlayerForBlurb(p, true)),
-      ...allEligibleByProjection
-        .filter((p: any) => !starterIds.has(p.player_id))
-        .map((p: any) => formatPlayerForBlurb(p, false))
+      ...startersSorted.map((p: any) => formatPlayerForBlurb(p, true)),
+      ...othersSorted.map((p: any) => formatPlayerForBlurb(p, false))
     ];
 
     const injured = (roster.players || [])
@@ -152,12 +164,8 @@ export default async function Home() {
       username: user.username,
       teamName: user.name || user.username,
       nickname: MANAGER_NICKNAMES[user.username] || user.username,
-      starters: allEligibleByProjection
-        .filter((p: any) => starterIds.has(p.player_id))
-        .map((p: any) => formatPlayerForBlurb(p, true)),
-      bench: allEligibleByProjection
-        .filter((p: any) => !starterIds.has(p.player_id))
-        .map((p: any) => formatPlayerForBlurb(p, false)),
+      starters: startersSorted.map((p: any) => formatPlayerForBlurb(p, true)),
+      bench: othersSorted.map((p: any) => formatPlayerForBlurb(p, false)),
       projectedPts,
       actualPts
     });
@@ -202,8 +210,8 @@ export default async function Home() {
 
       const championBonus = username === "Broth22" ? 15 : 0;
       const finalScore = IS_OFFSEASON
-      ? (rosterScore * 0.7) + (claudeScore * 10 * 0.3)
-      : (points * 0.25) + (wins * 20 * 0.45) + (rosterScore * 0.2) + (claudeScore * 10 * 0.1) + championBonus;
+        ? (rosterScore * 0.7) + (claudeScore * 10 * 0.3)
+        : (points * 0.15) + (wins * 20 * 0.55) + (rosterScore * 0.2) + (claudeScore * 10 * 0.1) + championBonus;
 
       return {
         teamName: user?.name || "Unknown",
@@ -217,25 +225,26 @@ export default async function Home() {
       };
     })
     .sort((a: any, b: any) => b.powerScore - a.powerScore);
-    // Fetch last week's blurbs to prevent joke recycling
-    let lastWeekBlurbs: string[] = [];
-    try {
-      const { data: recentBlurbData } = await supabase
-        .from("blurbs_cache")
-        .select("blurbs, week")
-        .eq("is_offseason", false)
-        .in("week", [CURRENT_WEEK - 1, CURRENT_WEEK - 2, CURRENT_WEEK - 3])
-        .order("week", { ascending: false });
-      if (recentBlurbData && recentBlurbData.length > 0) {
-        recentBlurbData.forEach((row: any) => {
-          const parsed = JSON.parse(row.blurbs);
-          lastWeekBlurbs = [...lastWeekBlurbs, ...parsed];
-        });
-      }
-    } catch (e) {
-      console.log("Could not fetch recent blurbs", e);
+
+  // Last 3 weeks of blurbs so Claude can see what's already been said
+  let lastWeekBlurbs: string[] = [];
+  try {
+    const { data: recentBlurbData } = await supabase
+      .from("blurbs_cache")
+      .select("blurbs, week")
+      .eq("is_offseason", false)
+      .in("week", [CURRENT_WEEK - 1, CURRENT_WEEK - 2, CURRENT_WEEK - 3])
+      .order("week", { ascending: false });
+    if (recentBlurbData && recentBlurbData.length > 0) {
+      recentBlurbData.forEach((row: any) => {
+        const parsed = JSON.parse(row.blurbs);
+        lastWeekBlurbs = [...lastWeekBlurbs, ...parsed];
+      });
     }
-  // Fetch weekly notes
+  } catch (e) {
+    console.log("Could not fetch recent blurbs", e);
+  }
+
   let weeklyNotes = "";
   try {
     const { data: notesData } = await supabase
@@ -284,10 +293,11 @@ export default async function Home() {
     const ptsA = pair[0]?.points || 0;
     const ptsB = pair[1]?.points || 0;
 
-    const getTopPerformers = (matchupEntry: any, roster: any) => {
+    const getTopPerformers = (matchupEntry: any) => {
       if (!matchupEntry?.players_points) return [];
+      const starterSet = new Set<string>(matchupEntry.starters || []);
       return Object.entries(matchupEntry.players_points)
-        .filter(([id]: any) => (roster?.starters || []).includes(id))
+        .filter(([id]: any) => starterSet.has(id))
         .map(([id, pts]: any) => {
           const player = allPlayers[id];
           return { name: player?.full_name || id, pts: pts as number };
@@ -300,8 +310,6 @@ export default async function Home() {
 
     const winnerEntry = ptsA > ptsB ? pair[0] : pair[1];
     const loserEntry = ptsA > ptsB ? pair[1] : pair[0];
-    const winnerRoster = ptsA > ptsB ? rosterA : rosterB;
-    const loserRoster = ptsA > ptsB ? rosterB : rosterA;
 
     return {
       matchup_id: pair[0]?.matchup_id,
@@ -313,8 +321,8 @@ export default async function Home() {
       avatarB: userB?.avatar,
       ptsA,
       ptsB,
-      winnerPlayers: getTopPerformers(winnerEntry, winnerRoster),
-      loserPlayers: getTopPerformers(loserEntry, loserRoster),
+      winnerPlayers: getTopPerformers(winnerEntry),
+      loserPlayers: getTopPerformers(loserEntry),
     };
   });
 
@@ -372,7 +380,7 @@ export default async function Home() {
   }
 
   let hotColdData = { hot: [] as any[], cold: [] as any[] };
-  if (!IS_OFFSEASON) {
+  if (!IS_OFFSEASON && CURRENT_WEEK >= 3) {
     try {
       await saveWeeklyStats(supabase, CURRENT_WEEK, matchups, allPlayers, weekStats);
       hotColdData = await getHotColdPlayers(supabase, CURRENT_WEEK);
@@ -571,7 +579,6 @@ export default async function Home() {
           {IS_OFFSEASON || CURRENT_WEEK < 3 ? (
             <div className="rounded-2xl border border-white/[0.06] px-5 py-8 text-center">
               <p className="text-white/30 text-sm">Hot & Cold players will appear here after week 3.</p>
-              <p className="text-white/15 text-xs mt-1">We track 3 weeks of actual vs projected performance to identify trends.</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-3">

@@ -60,19 +60,28 @@ Return ONLY a valid JSON array of strings, one recap per matchup, in the same or
     },
     body: JSON.stringify({
       model: "claude-sonnet-5-5",
-      max_tokens: 3000,
+      max_tokens: 8000,
+      thinking: { type: "adaptive" },
+      output_config: { effort: "low" },
       messages: [{ role: "user", content: prompt }]
     })
   });
 
   const data = await response.json();
 
-  if (!data.content || !data.content[0]) {
-    console.log("Recap API error:", JSON.stringify(data).slice(0, 500));
+  if (data.error) {
+    console.log("Recap API error:", JSON.stringify(data.error));
+  }
+  if (data.stop_reason) {
+    console.log("Recap stop_reason:", data.stop_reason);
+  }
+  const textBlock = (data.content || []).find((b: any) => b.type === "text");
+  if (!textBlock) {
+    console.log("Recap API response had no text block:", JSON.stringify(data).slice(0, 800));
     return games.map(() => "Recap unavailable.");
   }
 
-  const text = data.content[0].text;
+  const text = textBlock.text;
 
   try {
     const clean = text.replace(/```json|```/g, "").trim();

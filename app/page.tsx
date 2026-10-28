@@ -268,16 +268,19 @@ export default async function Home() {
     .order("created_at", { ascending: false })
     .limit(1);
 
-  if (cachedBlurbs && cachedBlurbs.length > 0) {
-    blurbs = JSON.parse(cachedBlurbs[0].blurbs);
-  } else {
-    blurbs = await generateTeamBlurbs(rankings, IS_OFFSEASON, CURRENT_WEEK, rosterInjuries, rosterPlayers, weeklyNotes, lastWeekBlurbs);
-    await supabase.from("blurbs_cache").insert([{
-      week: CURRENT_WEEK,
-      is_offseason: IS_OFFSEASON,
-      blurbs: JSON.stringify(blurbs)
-    }]);
-  }
+    if (cachedBlurbs && cachedBlurbs.length > 0) {
+      blurbs = JSON.parse(cachedBlurbs[0].blurbs);
+    } else {
+      blurbs = await generateTeamBlurbs(rankings, IS_OFFSEASON, CURRENT_WEEK, rosterInjuries, rosterPlayers, weeklyNotes, lastWeekBlurbs);
+      const allFailed = blurbs.every((b: string) => b === "Blurb unavailable.");
+      if (!allFailed) {
+        await supabase.from("blurbs_cache").insert([{
+          week: CURRENT_WEEK,
+          is_offseason: IS_OFFSEASON,
+          blurbs: JSON.stringify(blurbs)
+        }]);
+      }
+    }
 
   const matchupMap: Record<string, any[]> = {};
   matchups.forEach((m: any) => {

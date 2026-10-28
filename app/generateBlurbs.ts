@@ -167,19 +167,25 @@ ${teamSummaries}`;
     },
     body: JSON.stringify({
       model: "claude-opus-5-5",
-      max_tokens: 4000,
+      max_tokens: 16000,
+      thinking: { type: "adaptive" },
+      output_config: { effort: "low" },
       messages: [{ role: "user", content: prompt }]
     })
   });
 
   const data = await response.json();
-
-  if (!data.content || !data.content[0]) {
-    console.log("Claude blurb API error:", JSON.stringify(data).slice(0, 500));
+ 
+  if (data.error) {
+    console.log("Claude blurb API error:", JSON.stringify(data.error));
+  }
+  const textBlock = (data.content || []).find((b: any) => b.type === "text");
+  if (!textBlock) {
+    console.log("Claude blurb response had no text block. stop_reason:", data.stop_reason, "usage:", JSON.stringify(data.usage));
     return rankings.map(() => "Blurb unavailable.");
   }
 
-  const text = data.content[0].text;
+  const text = textBlock.text;
 
   try {
     const clean = text.replace(/```json|```/g, "").trim();

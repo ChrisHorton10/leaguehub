@@ -10,7 +10,7 @@ const supabase = createClient(
 );
 
 const LEAGUE_ID = "1330820695583625216";
-const CURRENT_WEEK = 7;
+const CURRENT_WEEK = 8;
 const IS_OFFSEASON = false;
 
 const MANAGER_NICKNAMES: Record<string, string> = {
